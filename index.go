@@ -43,6 +43,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	http.HandleFunc("/index", makeHandler(indexHandler))
 	http.ListenAndServe(":8080", nil)
 }
