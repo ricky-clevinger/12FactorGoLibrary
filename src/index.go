@@ -17,10 +17,10 @@ import (
 var validPath = regexp.MustCompile("^/(index)$")
 var templates = template.Must(template.ParseFiles("views/index.html"))
 
-//Currently not used
+/*Currently not used
 type Page struct {
 	member *Rows
-}
+}*/
 
 //Renders HTML page
 func renderTemplate(w http.ResponseWriter, tmpl string) {
