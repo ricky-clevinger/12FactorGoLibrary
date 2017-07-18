@@ -18,6 +18,4 @@ run:
   args:
     - -exc
     - |
-      export GOPATH=$(pwd)/gopath:$(pwd)/gopath/src/github.com/christopherneuhardt/12FactorGoLibrary
-      cd gopath/src/github.com/christopherneuhardt/12FactorGoLibrary
       go build -o built-project/library-go-app github.com/christopherneuhardt/12FactorGoLibrary
