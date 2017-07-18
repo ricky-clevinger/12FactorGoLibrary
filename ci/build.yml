@@ -13,4 +13,10 @@ outputs:
 - name: built-project
 
 run:
-  path: source-code/ci/build.sh
+  path: sh
+  path: sh
+  args:
+    - -exc
+    - |
+      export GOPATH=$PWD/src
+      go build -o built-project/library-go-app github.com/christopherneuhardt/12FactorGoLibrary/src
