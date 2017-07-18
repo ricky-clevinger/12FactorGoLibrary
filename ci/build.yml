@@ -1,0 +1,14 @@
+---
+platform: linux
+
+image_resource:
+    repository: golang
+
+inputs:
+- name: source-code
+
+outputs:
+- name: built-project
+
+run:
+  path: source-code/ci/build.sh
