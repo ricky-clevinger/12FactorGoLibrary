@@ -18,4 +18,5 @@ run:
   args:
     - -exc
     - |
+      export GOPATH=$PWD/source-code
       go build -o built-project/library-go-app github.com/christopherneuhardt/12FactorGoLibrary
