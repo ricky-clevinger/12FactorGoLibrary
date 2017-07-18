@@ -5,6 +5,7 @@ image_resource:
   type: docker-image
   source:
     repository: golang
+    tag: "latest"
 
 inputs:
 - name: source-code
@@ -18,5 +19,5 @@ run:
   args:
     - -exc
     - |
-      export GOPATH=$PWD/src
+      export GOPATH=$PWD
       go build -o built-project/library-go-app github.com/christopherneuhardt/12FactorGoLibrary/src
