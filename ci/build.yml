@@ -19,5 +19,4 @@ run:
     - |
       export GOPATH=$PWD
       go get github.com/go-sql-driver/mysql
-      go get github.com/christopherneuhardt/12FactorGoLibrary/src
       go build github.com/christopherneuhardt/12FactorGoLibrary/src
