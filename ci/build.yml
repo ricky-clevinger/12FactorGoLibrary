@@ -18,4 +18,4 @@ run:
     - -exc
     - |
       export GOPATH=$PWD
-      go build github.com/christopherneuhardt/12FactorGoLibrary/src
+      go build github.com/christopherneuhardt/12FactorGoLibrary/src/index.go
