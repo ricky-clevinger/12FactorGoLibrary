@@ -18,4 +18,5 @@ run:
     - -exc
     - |
       export GOPATH=$PWD
+      ls -lat
       go build index.go
