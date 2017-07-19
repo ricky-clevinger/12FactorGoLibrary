@@ -18,5 +18,5 @@ run:
     - -exc
     - |
       export GOPATH=$PWD
-      go get github.com/christopherneuhardt/12FactorGoLibrary
+      go get github.com/christopherneuhardt/12FactorGoLibrary/src
       go build github.com/christopherneuhardt/12FactorGoLibrary/src
