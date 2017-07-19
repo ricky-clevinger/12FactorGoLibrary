@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"regexp"
 
-	_ "mysql"
+	_ "../../12FactorGoLibrary/src/mysql"
 )
 
 var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html)$")
