@@ -5,6 +5,7 @@ image_resource:
   type: docker-image
   source:
     repository: golang
+    tag: "latest"
 
 inputs:
 - name: source-code
@@ -13,4 +14,9 @@ outputs:
 - name: built-project
 
 run:
-  path: source-code/ci/build.sh
+  path: sh
+  args:
+    - -exc
+    - |
+      export GOPATH=$PWD/source-code
+      go build -o built-project/library-go-app source-code
