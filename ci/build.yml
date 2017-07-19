@@ -18,5 +18,5 @@ run:
     - -exc
     - |
       export GOPATH=$PWD/source-code
-      go install source-code
+      go build source-code
       go run source-code
