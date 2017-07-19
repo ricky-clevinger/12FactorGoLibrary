@@ -21,4 +21,6 @@ run:
       ls -lat
       cd source-code
       ls -lat
+      cd src
+      ls -lat
       go build index.go
