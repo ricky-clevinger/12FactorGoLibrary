@@ -7,7 +7,7 @@ image_resource:
     repository: golang
 
 inputs:
-- name: source-code
+- name: 12FactorGoLibrary
 
 outputs:
 - name: built-project
@@ -18,6 +18,9 @@ run:
     - -exc
     - |
       export GOPATH=$PWD
-      go get github.com/go-sql-driver/mysql
-      go get github.com/christopherneuhardt/12FactorGoLibrary/src
-      go build github.com/christopherneuhardt/12FactorGoLibrary/src
+      ls -lat
+      cd 12FactorGoLibrary
+      ls -lat
+      cd src
+      ls -lat
+      go build index.go
