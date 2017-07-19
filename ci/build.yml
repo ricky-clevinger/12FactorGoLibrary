@@ -7,7 +7,7 @@ image_resource:
     repository: golang
 
 inputs:
-- name: source-code
+- name: 12FactorGoLibrary
 
 outputs:
 - name: built-project
@@ -19,7 +19,7 @@ run:
     - |
       export GOPATH=$PWD
       ls -lat
-      cd source-code
+      cd 12FactorGoLibrary
       ls -lat
       cd src
       ls -lat
