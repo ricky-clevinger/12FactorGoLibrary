@@ -19,4 +19,6 @@ run:
     - |
       export GOPATH=$PWD
       ls -lat
+      cd source-code
+      ls -lat
       go build index.go
