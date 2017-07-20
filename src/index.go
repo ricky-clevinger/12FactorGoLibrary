@@ -8,7 +8,7 @@ import (
 	"html/template"
 	"net/http"
 	"regexp"
-	"github.com/mysql"
+	"../../github.com/mysql"
 )
 
 var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html)$")
