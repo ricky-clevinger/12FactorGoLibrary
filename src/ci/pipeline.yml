@@ -4,7 +4,7 @@ resources:
   type: git
   source:
     uri: https://github.com/christopherneuhardt/12FactorGoLibrary.git
-
+    branch: test
 - name: deploy-app-dev
   type: cf
   source:
@@ -41,11 +41,11 @@ jobs:
     privileged: true
     file: 12FactorGoLibrary/src/ci/build.yml
   - put: deploy-app-dev
-      params:
+    params:
       manifest: 12FactorGoLibrary/src/ci/manifest.yml
       path: 12FactorGoLibrary
   - put: deploy-app-test
-      params:
+    params:
       manifest: 12FactorGoLibrary/src/ci/manifest.yml
       path: 12FactorGoLibrary
   - put: deploy-app-prod
