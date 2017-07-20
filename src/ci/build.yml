@@ -24,4 +24,5 @@ run:
       ls -lat
       cd src
       ls -lat
+      go get -u github.com/mysql
       go build index.go
