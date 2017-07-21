@@ -22,6 +22,5 @@ run:
       ls -lat
       cd 12FactorGoLibrary
       ls -lat
-      echo $GOPATH
-      echo $GOROOT
+      cd src
       go build index.go
