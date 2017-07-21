@@ -23,5 +23,4 @@ run:
       cd 12FactorGoLibrary
       ls -lat
       cd src
-      ls -lat
       go build index.go
