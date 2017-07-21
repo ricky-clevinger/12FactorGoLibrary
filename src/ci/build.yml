@@ -24,4 +24,4 @@ run:
       ls -lat
       cd src
       ls -lat
-      go build index.go ./index
+      go build index.go
