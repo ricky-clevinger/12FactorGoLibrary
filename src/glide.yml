@@ -1,0 +1,3 @@
+package: mysql
+import:
+- package: github.com/mysql
