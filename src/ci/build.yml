@@ -24,4 +24,6 @@ run:
       ls -lat
       cd src
       ls -lat
+      echo $GOPATH
+      echo $GOROOT
       go build index.go
