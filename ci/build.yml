@@ -18,6 +18,7 @@ run:
   args:
     - -exc
     - |
+      go env
       ls -a
       cd 12FactorGoLibrary
       ls -a
