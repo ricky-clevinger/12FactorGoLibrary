@@ -28,5 +28,6 @@ run:
       ls -lat
       cd src
       go get github.com/go-sql-driver/mysql
+      ls -a
       go build index.go
       ls -a
