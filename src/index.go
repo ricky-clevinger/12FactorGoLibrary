@@ -8,7 +8,7 @@ import (
 	"html/template"
 	"net/http"
 	"regexp"
-	_"github.com/go-sql-driver/mysql"
+	_"github.com/mysql"
 )
 
 var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html)$")
