@@ -1,7 +1,7 @@
 package main
 
 //Author: C Neuhardt
-//Last Updated: 7/17/2017
+//Last Updated: 7/24/2017
 
 import (
 	"database/sql"
@@ -69,6 +69,12 @@ func checkErr(err error) {
 	}
 }
 
+//Redirect to index.html
+func redirect(w http.ResponseWriter, r *http.Request) {
+
+	http.Redirect(w, r, "/index.html", 301)
+}
+
 func main() {
 	var memberIds []int
 	var memberNames []string
@@ -97,6 +103,7 @@ func main() {
 		memberNames = append(memberNames, MemberFName+" "+MemberLName)
 	}
 
+	http.HandleFunc("/", redirect)
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	http.HandleFunc("/index.html", makeHandler(indexHandler, memberIds, memberNames))
 	http.HandleFunc("/admin.html", makeHandler(adminHandler, memberIds, memberNames))
