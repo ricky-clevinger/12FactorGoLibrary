@@ -27,6 +27,8 @@ run:
       go env
       ls -lat
       cd src
+      cd 12FactorGoLibrary
+      ls -a
       go get github.com/go-sql-driver/mysql
       ls -a
       go build index.go
