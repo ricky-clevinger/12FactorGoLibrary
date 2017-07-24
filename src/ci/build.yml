@@ -22,11 +22,11 @@ run:
       ls -a
       cd 12FactorGoLibrary
       ls -a
-      go get github.com/go-sql-driver/mysql
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
       go env
       ls -lat
       cd src
+      go get github.com/go-sql-driver/mysql
       go build index.go
       ls -a
