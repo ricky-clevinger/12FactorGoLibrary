@@ -31,4 +31,3 @@ run:
       ls -a
       go build index.go
       ls -a
-      cf --version
