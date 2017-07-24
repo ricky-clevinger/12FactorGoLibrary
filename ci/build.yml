@@ -22,7 +22,7 @@ run:
       cd 12FactorGoLibrary
       ls -a
       export GOPATH=$PWD
-      export PATH=$PATH
+      export PATH=$PATH:$GOPATH
       ls -lat
       go build index.go
       ls -a
