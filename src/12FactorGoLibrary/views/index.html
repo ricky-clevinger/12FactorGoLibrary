@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!-- >
+     Created By: Chris Neuhardt
+     Created On: 7/12/17
+     Updated By: Jonathan Quilliams
+    Last Update: 7/14/17
+      File Name: index.html
+
+   Dependencies: bootstrap 3.3.7, jquery 3.2.1, javascript
+<! -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>Library Services</title>
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="../resources/css/bootstrap.min.css" ></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="../resources/js/bootstrap.min.js"></script>
+
+        <!-- Custom Style -->
+        <link rel="stylesheet" href="../resources/theme.css" ></link>
+        
+    </head>
+
+    <body>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Library App</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.html">Home</a></li>
+                    <li><a href="admin.html">Admin</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+        </nav>
+        <!-- Main Container -->
+        <div class="container theme-showcase" role="main">
+            <div class="jumbotron">
+                <h1>Welcome to the Library!</h1>
+                <p>This is a sample welcome page</p>
+            </div>
+            <div class="row marketing">
+                <div class="col-lg-6">
+                    <h3>Check Out</h3>
+                    <a class="btn btn-lg btn-success" role="button" href="checkout.html" >Check Out Book</a>
+                </div>
+                <div class="col-lg-6">
+                    <h3>Check In</h3>
+                    <a class="btn btn-lg btn-success" role="button" href="#" >Check In Book</a>
+                </div>
+            </div>
+            <hr></hr>
+            <div>
+                <h3>Book Search</h3>
+                <form>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form> 
+            </div>
+            <hr></hr>
+            <footer class="footer">
+                <p>&copy; 2017 Library Services</p>
+            </footer>
+        </div>
+    </body>
+</html>
