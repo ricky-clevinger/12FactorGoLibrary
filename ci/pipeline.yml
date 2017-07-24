@@ -1,0 +1,54 @@
+---
+resources:
+- name: 12FactorGoLibrary
+  type: git
+  source:
+    uri: https://github.com/christopherneuhardt/12FactorGoLibrary.git
+    branch: test
+- name: deploy-app-dev
+  type: cf
+  source:
+    api: https://api.run.pivotal.io
+    username: coxcs1@etsu.edu
+    password: Dog.Bark1();
+    organization: coxcs1-org
+    space: development
+    skip_cert_check: true
+- name: deploy-app-test
+  type: cf
+  source:
+    api: https://api.run.pivotal.io
+    username: coxcs1@etsu.edu
+    password: Dog.Bark1();
+    organization: coxcs1-org
+    space: test
+    skip_cert_check: true
+- name: deploy-app-prod
+  type: cf
+  source:
+    api: https://api.run.pivotal.io
+    username: coxcs1@etsu.edu
+    password: Dog.Bark1();
+    organization: coxcs1-org
+    space: prod
+    skip_cert_check: true
+jobs:
+- name: deploy-app-to
+  serial: true
+  plan:
+  - {get: 12FactorGoLibrary, trigger: true}
+  - task: build
+    privileged: true
+    file: 12FactorGoLibrary/src/ci/build.yml
+  - put: deploy-app-dev
+    params:
+      manifest: 12FactorGoLibrary/src/ci/manifest.yml
+      path: 12FactorGoLibrary
+  - put: deploy-app-test
+    params:
+      manifest: 12FactorGoLibrary/src/ci/manifest.yml
+      path: 12FactorGoLibrary
+  - put: deploy-app-prod
+    params:
+      manifest: 12FactorGoLibrary/src/ci/manifest.yml
+      path: 12FactorGoLibrary

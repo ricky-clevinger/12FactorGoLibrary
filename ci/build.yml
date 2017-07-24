@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: "1.8"
+
+inputs:
+- name: 12FactorGoLibrary
+
+outputs:
+- name: built-project
+
+run:
+  path: sh
+  args:
+    - -exc
+    - |
+      export GOPATH=$PWD
+      ls -lat
+      cd 12FactorGoLibrary
+      ls -lat
+      cd src
+      go build index.go

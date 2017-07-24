@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!-- >
+     Created By: Chris Neuhardt
+     Created On: 7/17/17
+     Updated By: Jonathan Quilliams
+    Last Update: 7/17/17
+      File Name: checkout.html
+
+   Dependencies: bootstrap 3.3.7, jquery 3.2.1, mysql, javascript, seldateget.js
+<! -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>Library Services</title>
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="../resources/css/bootstrap.min.css" ></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="../resources/js/bootstrap.min.js"></script>
+
+        <!-- Custom Style -->
+        <link rel="stylesheet" href="../resources/theme.css" ></link>
+
+        
+        
+    </head>
+
+    <body>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Library App</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="index.html">Home</a></li>
+                    <li><a href="admin.html">Admin</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+        </nav>
+        <!-- Main Container -->
+        <div class="container theme-showcase" role="main">
+            <div class="container">
+                <h2>Check Out a Book</h2>
+                <form class="form-horizontal" action="#">
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="selPerson">Person checking out this book</label>
+                            <select class="form-control" id="selPerson">
+                                <option>Placeholder 1</option>
+                                <option>Placeholder 2</option>
+                                <option>Placeholder 3</option>
+                                <option>Placeholder 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="selBook">Book being checked out</label>
+                            <select class="form-control" id="selBook">
+                                <option>Placeholder 1</option>
+                                <option>Placeholder 2</option>
+                                <option>Placeholder 3</option>
+                                <option>Placeholder 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="selDateOut">Date Out</label>
+                            <input disabled="" class="form-control" id="selDate" name="selDate"></input>
+                        </div>
+                        <!-- Custom JS to Capture the Date -->
+                        <script src="../resources/js/seldateget.js"></script>
+                    </div>
+                    <div class="form-group">
+                        <div div="col-sm-offset-2">
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <hr></hr>
+            <footer class="footer">
+                <p>&copy; 2017 Library Services</p>
+            </footer>
+        </div>
+    </body>
+</html>
