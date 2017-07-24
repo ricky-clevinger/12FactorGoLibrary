@@ -26,5 +26,6 @@ run:
       export PATH=$PATH:$GOPATH
       go env
       ls -lat
+      cd src
       go build index.go
       ls -a
