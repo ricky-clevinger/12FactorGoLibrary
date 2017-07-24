@@ -22,10 +22,11 @@ run:
       ls -a
       cd 12FactorGoLibrary
       ls -a
+      govendor migrate
+      govendor list -v
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
       go env
-      govendor list -v
       ls -lat
       cd src
       go build index.go
