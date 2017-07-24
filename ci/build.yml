@@ -19,7 +19,7 @@ run:
     - -exc
     - |
       export GOPATH=$PWD
-      export PATH=$PATH:$GOPATH/bin
+      export PATH=$GOPATH
       ls -lat
       cd 12FactorGoLibrary
       ls -lat
