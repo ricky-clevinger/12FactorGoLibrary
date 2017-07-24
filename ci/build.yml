@@ -24,6 +24,7 @@ run:
       ls -a
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
+      go env
       ls -lat
       go build index.go
       ls -a
