@@ -25,6 +25,7 @@ run:
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
       go env
+      govendor list -v
       ls -lat
       cd src
       go build index.go
