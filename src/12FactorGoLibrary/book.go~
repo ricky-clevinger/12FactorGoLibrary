@@ -5,13 +5,13 @@ package book
 // Edited: 7/25/17
 //Purpose: Grab book information/SQL from databse
 
-/*import (
+import (
 	"fmt"
 	"os"
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
-)*/
+)
 
 func main() {
 	
