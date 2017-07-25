@@ -21,8 +21,10 @@ jobs:
   - {get: go-library-source, trigger: true}
   - task: go-unit-tests
     file: go-library-source/src/12FactorGoLibrary/ci/goUnitTest.yml
+    privileged: true
   - task: build-deploy-go-library
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
+    privileged: true
   - put: go-library-dev
     params:
        manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
