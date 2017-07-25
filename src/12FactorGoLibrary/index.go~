@@ -8,7 +8,6 @@ import (
 	"html/template"
 	"net/http"
 	"regexp"
-	"book"
 	_ "github.com/go-sql-driver/mysql"
 )
 
