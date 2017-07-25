@@ -8,11 +8,11 @@ resources:
 - name: deploy-app-dev
   type: cf
   source:
-    api: https://api.run.pivotal.io
-    username: coxcs1@etsu.edu
-    password: Dog.Bark1();
-    organization: coxcs1-org
-    space: development
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
     skip_cert_check: true
 jobs:
 - name: build-deploy-library
