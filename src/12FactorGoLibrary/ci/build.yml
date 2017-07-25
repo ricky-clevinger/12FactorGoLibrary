@@ -8,7 +8,7 @@ image_resource:
     tag: "1.8"
 
 inputs:
-- name: 12FactorGoLibrary
+- name: go-library-source
 
 outputs:
 - name: built-project
@@ -20,7 +20,7 @@ run:
     - |
       go env
       ls -a
-      cd 12FactorGoLibrary
+      cd go-library-source
       ls -a
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
