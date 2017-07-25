@@ -29,7 +29,6 @@ run:
       cd src
       cd 12FactorGoLibrary
       ls -a
-      go build book.go
       go build index.go
       ls -a
       cd $GOPATH
