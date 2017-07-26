@@ -1,7 +1,7 @@
 package main
 
 //Author: C Neuhardt
-//Last Updated: 7/24/2017
+//Last Updated: 7/26/2017
 
 import (
 	//"database/sql"
@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"regexp"
 	//"book"
-	//"member"
 	_ "github.com/go-sql-driver/mysql"
 	"member"
 )
