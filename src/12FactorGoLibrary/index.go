@@ -4,7 +4,8 @@ package main
 //Last Updated: 7/26/2017
 
 import (
-	//"database/sql"
+	"os"
+	"database/sql"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -13,8 +14,8 @@ import (
 	"member"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/test.html"))
+var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html|checkout.html|checkedout)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/test.html", "views/checkout.html"))
 
 //Currently not used
 type Page struct {
@@ -46,6 +47,18 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, []int, []string), m
 	}
 }
 
+//Validates path and calls handler
+func makeGenericHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		/*m := validPath.FindStringSubmatch(r.URL.Path)
+		if m == nil {
+			http.NotFound(w, r)
+			return
+		}*/
+		fn(w, r)
+	}
+}
+
 //Handles the index page
 func indexHandler(w http.ResponseWriter, r *http.Request, memberIds []int, memberNames []string) {
 	p := loadPage(memberIds, memberNames)
@@ -62,6 +75,30 @@ func adminHandler(w http.ResponseWriter, r *http.Request, memberIds []int, membe
 func testHandler(w http.ResponseWriter, r *http.Request, memberIds []int, memberNames []string) {
 	p := loadPage(memberIds, memberNames)
 	renderTemplate(w, "test", p)
+}
+
+//Handles the checkout page
+func checkoutHandler(w http.ResponseWriter, r *http.Request, memberIds []int, memberNames []string) {
+	p := loadPage(memberIds, memberNames)
+	renderTemplate(w, "checkout", p)
+}
+
+//Handles the checkout page
+func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
+	memberId := r.FormValue("selPerson")
+	bookId := r.FormValue("selBook")
+	date := r.FormValue("selDateOut")
+
+	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+	checkErr(err)
+	defer db.Close()
+
+	stmt, err := db.Prepare("INSERT INTO transaction (book_id, tran_date, che, mid) VALUES (?, ?, 2, ?)")
+	checkErr(err)
+
+	stmt.Exec(bookId, date, memberId)
+
+	http.Redirect(w, r, "/index.html", http.StatusFound)
 }
 
 //Checks for errors
@@ -89,5 +126,7 @@ func main() {
 	http.HandleFunc("/index.html", makeHandler(indexHandler, memberIds, memberFNames))
 	http.HandleFunc("/admin.html", makeHandler(adminHandler, memberIds, memberFNames))
 	http.HandleFunc("/test.html", makeHandler(testHandler, memberIds, memberFNames))
+	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler, memberIds, memberFNames))
+	http.HandleFunc("/checkedout", makeGenericHandler(checkedoutHandler))
 	http.ListenAndServe(":8080", nil)
 }
