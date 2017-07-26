@@ -5,10 +5,10 @@ image_resource:
   type: docker-image
   source:
     repository: golang
-    tag: "1.8"
-
+    tag: "latest"
+    
 inputs:
-- name: 12FactorGoLibrary
+- name: go-library-source
 
 outputs:
 - name: built-project
@@ -18,17 +18,11 @@ run:
   args:
     - -exc
     - |
-      go env
-      ls -a
-      cd 12FactorGoLibrary
-      ls -a
+      cd go-library-source
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
-      go env
-      ls -lat
       cd src
       cd 12FactorGoLibrary
-      ls -a
       go build index.go
       ls -a
       cd $GOPATH

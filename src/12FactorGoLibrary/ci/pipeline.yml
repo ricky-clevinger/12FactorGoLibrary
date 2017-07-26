@@ -1,11 +1,11 @@
 ---
 resources:
-- name: 12FactorGoLibrary
+- name: go-library-source
   type: git
   source:
     uri: https://github.com/christopherneuhardt/12FactorGoLibrary
-    branch: test1
-- name: deploy-app-dev
+    branch: master
+- name: go-library-dev
   type: cf
   source:
     api: {{cf-api}}
@@ -15,13 +15,17 @@ resources:
     space: {{cf-space}}
     skip_cert_check: true
 jobs:
-- name: build-deploy-library
+- name: deploy-go-library-dev
   serial: true
   plan:
-  - {get: 12FactorGoLibrary, trigger: true}
-  - task: build-and-deploy
-    file: 12FactorGoLibrary/src/12FactorGoLibrary/ci/build.yml
-  - put: deploy-app-dev
+  - {get: go-library-source, trigger: true}
+  - task: go-unit-tests
+    file: go-library-source/src/12FactorGoLibrary/ci/goUnitTest.yml
+    privileged: true
+  - task: build-deploy-go-library
+    file: go-library-source/src/12FactorGoLibrary/ci/build.yml
+    privileged: true
+  - put: go-library-dev
     params:
-       manifest: 12FactorGoLibrary/src/12FactorGoLibrary/manifest.yml
-       path: 12FactorGoLibrary/src/12FactorGoLibrary
+       manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
+       path: go-library-source/src/12FactorGoLibrary
