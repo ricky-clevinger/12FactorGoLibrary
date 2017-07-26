@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"regexp"
 	//"book"
+	//"member"
 	_ "github.com/go-sql-driver/mysql"
 )
 
