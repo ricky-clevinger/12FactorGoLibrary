@@ -1,6 +1,3 @@
 bin/
 pkg/
-ci/credentialsDev.yml
-ci/credentialsTest.yml
-ci/credentialsProd.yml
 ci/flyCred.bat
