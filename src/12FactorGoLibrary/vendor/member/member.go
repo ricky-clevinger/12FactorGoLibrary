@@ -13,7 +13,7 @@ import (
 var connectionString = "cgidevlib:Password1@tcp(cgiprojdevlibrary.cxyeb3wmov3g.us-east-1.rds.amazonaws.com:9871)/cgiprojdevlibrary"
 
 //Return an array of IDs for each member in the db
-func getIds() []int {
+func GetIds() []int {
 	var memberIds []int
 	
 	db, err := sql.Open("mysql", connectionString)
@@ -33,7 +33,7 @@ func getIds() []int {
 }
 
 //Return an array of First Names for each member in the db
-func getFNames() []string {
+func GetFNames() []string {
 	var memberFNames []string
 	
 	db, err := sql.Open("mysql", connectionString)
@@ -53,7 +53,7 @@ func getFNames() []string {
 }
 
 //Return an array of Last Names for each member in the db
-func getLNames() []string {
+func GetLNames() []string {
 	var memberLNames []string
 	
 	db, err := sql.Open("mysql", connectionString)
@@ -73,7 +73,7 @@ func getLNames() []string {
 }
 
 //Return First Name for a member using member_id
-func getFNameById(memberId int) string {
+func GetFNameById(memberId int) string {
 	db, err := sql.Open("mysql", connectionString)
 	checkErr(err)
 	defer db.Close()
@@ -92,7 +92,7 @@ func getFNameById(memberId int) string {
 }
 
 //Return Last Name for a member using member_id
-func getLNameById(memberId int) string {
+func GetLNameById(memberId int) string {
 	db, err := sql.Open("mysql", connectionString)
 	checkErr(err)
 	defer db.Close()
