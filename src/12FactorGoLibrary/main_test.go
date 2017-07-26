@@ -1,9 +1,13 @@
-package member
+package main
 
-import "testing"
+import (
+	"testing"
+	"member"
+)
 
+//Begin member package testing
 func TestGetIds(t *testing.T) {
-	memberIds := getIds()
+	memberIds := member.GetIds()
 
 	if len(memberIds) < 1 {
 		t.Errorf("No member IDs loaded from database.")
@@ -11,7 +15,7 @@ func TestGetIds(t *testing.T) {
 }
 
 func TestGetFNames(t *testing.T) {
-	memberFNames := getFNames()
+	memberFNames := member.GetFNames()
 
 	if len(memberFNames) < 1 {
 		t.Errorf("No first names loaded from database.")
@@ -19,7 +23,7 @@ func TestGetFNames(t *testing.T) {
 }
 
 func TestGetLNames(t *testing.T) {
-	memberLNames := getLNames()
+	memberLNames := member.GetLNames()
 
 	if len(memberLNames) < 1 {
 		t.Errorf("No last names loaded from database.")
@@ -27,7 +31,7 @@ func TestGetLNames(t *testing.T) {
 }
 
 func TestGetFNameById(t *testing.T) {
-	FName := getFNameById(1)
+	FName := member.GetFNameById(1)
 
 	if FName != "Ricky" {
 		t.Errorf("Incorrect First Name retrieved when searching for member with ID = 1")
@@ -35,9 +39,10 @@ func TestGetFNameById(t *testing.T) {
 }
 
 func TestGetLNameById(t *testing.T) {
-	LName := getLNameById(1)
+	LName := member.GetLNameById(1)
 
 	if LName != "Clevinger" {
 		t.Errorf("Incorrect Last Name retrieved when searching for member with ID = 1")
 	}
 }
+//End member package testing.

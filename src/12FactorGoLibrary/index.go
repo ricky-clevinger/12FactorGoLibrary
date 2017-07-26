@@ -4,13 +4,14 @@ package main
 //Last Updated: 7/24/2017
 
 import (
-	"database/sql"
+	//"database/sql"
 	"html/template"
 	"net/http"
 	"regexp"
 	//"book"
 	//"member"
 	_ "github.com/go-sql-driver/mysql"
+	"member"
 )
 
 var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html)$")
@@ -19,11 +20,11 @@ var templates = template.Must(template.ParseFiles("views/index.html", "views/adm
 //Currently not used
 type Page struct {
 	MemberIds   []int
-	MemberNames []string
+	MemberFNames []string
 }
 
-func loadPage(memberIds []int, memberNames []string) *Page {
-	return &Page{MemberIds: memberIds, MemberNames: memberNames}
+func loadPage(memberIds []int, memberFNames []string) *Page {
+	return &Page{MemberIds: memberIds, MemberFNames: memberFNames}
 }
 
 //Renders HTML page
@@ -79,36 +80,15 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	var memberIds []int
-	var memberNames []string
+	var memberFNames []string
 
-	//TODO: Replace connection data with env vars
-	db, err := sql.Open("mysql", "cgidevmem:Password1@tcp(cgiprojdevmember.cxyeb3wmov3g.us-east-1.rds.amazonaws.com:3306)/cgiprojdevmember")
-	checkErr(err)
-	defer db.Close()
-
-	memberIdRows, err := db.Query("SELECT member_id FROM member")
-	checkErr(err)
-	for memberIdRows.Next() {
-		var MemberId int
-		err = memberIdRows.Scan(&MemberId)
-		checkErr(err)
-		memberIds = append(memberIds, MemberId)
-	}
-
-	memberNameRows, err := db.Query("SELECT member_fname, member_lname FROM member")
-	checkErr(err)
-	for memberNameRows.Next() {
-		var MemberFName string
-		var MemberLName string
-		err = memberNameRows.Scan(&MemberFName, &MemberLName)
-		checkErr(err)
-		memberNames = append(memberNames, MemberFName+" "+MemberLName)
-	}
+	memberIds = member.GetIds()
+	memberFNames = member.GetFNames()
 
 	http.HandleFunc("/", redirect)
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
-	http.HandleFunc("/index.html", makeHandler(indexHandler, memberIds, memberNames))
-	http.HandleFunc("/admin.html", makeHandler(adminHandler, memberIds, memberNames))
-	http.HandleFunc("/test.html", makeHandler(testHandler, memberIds, memberNames))
+	http.HandleFunc("/index.html", makeHandler(indexHandler, memberIds, memberFNames))
+	http.HandleFunc("/admin.html", makeHandler(adminHandler, memberIds, memberFNames))
+	http.HandleFunc("/test.html", makeHandler(testHandler, memberIds, memberFNames))
 	http.ListenAndServe(":8080", nil)
 }
