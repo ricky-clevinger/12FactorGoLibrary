@@ -18,17 +18,11 @@ run:
   args:
     - -exc
     - |
-      go env
-      ls -a
       cd go-library-source
-      ls -a
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
-      go env
-      ls -lat
       cd src
       cd 12FactorGoLibrary
-      ls -a
       go build index.go
       ls -a
       cd $GOPATH
