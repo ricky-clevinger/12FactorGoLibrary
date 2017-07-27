@@ -1,16 +1,17 @@
 package member
 
 //Author: C Neuhardt
-//Last Updated: 7/25/2017
+//Last Updated: 7/26/2017
 
 import (
+	"os"
 	"fmt"	
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-//TODO: Replace connection data with env vars
-var connectionString = "cgidevlib:Password1@tcp(cgiprojdevlibrary.cxyeb3wmov3g.us-east-1.rds.amazonaws.com:9871)/cgiprojdevlibrary"
+//Gets the connection string "cgidevlib:Password1@tcp(cgiprojdevlibrary.cxyeb3wmov3g.us-east-1.rds.amazonaws.com:9871)/cgiprojdevlibrary"
+var connectionString = os.Getenv("LIBRARY")
 
 //Return an array of IDs for each member in the db
 func GetIds() []int {

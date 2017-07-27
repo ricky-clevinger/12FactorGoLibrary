@@ -5,6 +5,19 @@ import (
 	"member"
 )
 
+//Begin main package testing
+func TestLoadPage(t *testing.T) {
+	memberIds := []int{1}
+	memberFNames := []string{"spider man"}
+
+	page := loadPage(memberIds, memberFNames)
+
+	if page.MemberIds[0] != 1 && page.MemberFNames[0] != "spider man" {
+		t.Errorf("Page did not load based on data.")
+	}
+}
+//End main package testing
+
 //Begin member package testing
 func TestGetIds(t *testing.T) {
 	memberIds := member.GetIds()
