@@ -4,7 +4,7 @@ package member
 //Last Updated: 7/26/2017
 
 import (
-	"os"
+	//"os"
 	"fmt"	
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
