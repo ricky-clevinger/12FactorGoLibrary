@@ -11,7 +11,7 @@ import (
 )
 
 //Gets the connection string "cgidevlib:Password1@tcp(cgiprojdevlibrary.cxyeb3wmov3g.us-east-1.rds.amazonaws.com:9871)/cgiprojdevlibrary"
-var connectionString = os.Getenv("LIBRARY")
+var connectionString = "cgidevlib:Password1@tcp(cgiprojdevlibrary.cxyeb3wmov3g.us-east-1.rds.amazonaws.com:9871)/cgiprojdevlibrary"
 
 //Return an array of IDs for each member in the db
 func GetIds() []int {
