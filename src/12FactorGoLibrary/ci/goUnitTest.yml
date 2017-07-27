@@ -15,6 +15,6 @@ run:
   args:
     - -exc
     - |
-      chmod +x *.sh
+      chmod +x build.sh
       #unitesting
       #go test
