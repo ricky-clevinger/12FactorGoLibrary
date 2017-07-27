@@ -21,6 +21,7 @@ run:
       cd go-library-source
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
+      export LIBRARY="https://astaxie.gitbooks.io/build-web-application-with-golang/en/04.1.html"
       cd src
       cd 12FactorGoLibrary
       go build index.go
