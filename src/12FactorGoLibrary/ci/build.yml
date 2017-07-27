@@ -14,4 +14,10 @@ outputs:
 - name: built-project
 
 run:
+  path: sh
+  args:
+    - -exc
+    - |
+      chmod +x go-library-source/src/12FactorGoLibrary/ci/build.sh
+run:
   path: go-library-source/src/12FactorGoLibrary/ci/build.sh
