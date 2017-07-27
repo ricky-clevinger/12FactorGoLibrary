@@ -5,6 +5,7 @@ package main
 
 import (
 	"os"
+	"fmt"
 	"database/sql"
 	"html/template"
 	"net/http"
@@ -14,8 +15,8 @@ import (
 	"member"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html|checkout.html|checkedout)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/test.html", "views/checkout.html"))
+var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
 
 //Currently not used
 type Page struct {
@@ -93,10 +94,60 @@ func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 	defer db.Close()
 
+	//Log transaction
 	stmt, err := db.Prepare("INSERT INTO transaction (book_id, tran_date, che, mid) VALUES (?, ?, 2, ?)")
 	checkErr(err)
 
 	stmt.Exec(bookId, date, memberId)
+
+	//Update checkout status
+	stmt2, err := db.Prepare("UPDATE books SET book_check=2, mid=?, book_out_date=? WHERE book_id=?")
+	checkErr(err)
+
+	stmt2.Exec(memberId, date, bookId)
+
+	http.Redirect(w, r, "/index.html", http.StatusFound)
+}
+
+//Handles the checkin page
+func checkinHandler(w http.ResponseWriter, r *http.Request, memberIds []int, memberNames []string) {
+	p := loadPage(memberIds, memberNames)
+	renderTemplate(w, "checkin", p)
+}
+
+//Handles the checkin page
+func checkedinHandler(w http.ResponseWriter, r *http.Request) {
+	var memberId int
+	bookId := r.FormValue("selBook")
+	date := r.FormValue("selDateIn")
+
+	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+	checkErr(err)
+	defer db.Close()
+
+	//Get Member ID
+	queryString := fmt.Sprintf("SELECT mid FROM books WHERE book_id = %d", bookId)
+	rows, err := db.Query(queryString)
+	checkErr(err)
+	
+	for rows.Next() {
+		var mid int
+		err = rows.Scan(&mid)
+		checkErr(err)
+		memberId = mid
+	}
+
+	//Log transaction
+	stmt, err := db.Prepare("INSERT INTO transaction (book_id, tran_date, che, mid) VALUES (?, ?, 2, ?)")
+	checkErr(err)
+
+	stmt.Exec(bookId, date, memberId)
+
+	//Update checkout status
+	stmt2, err := db.Prepare("UPDATE books SET book_check=1, mid=0, book_out_date=null WHERE book_id=?")
+	checkErr(err)
+
+	stmt2.Exec(bookId)
 
 	http.Redirect(w, r, "/index.html", http.StatusFound)
 }
@@ -128,5 +179,7 @@ func main() {
 	http.HandleFunc("/test.html", makeHandler(testHandler, memberIds, memberFNames))
 	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler, memberIds, memberFNames))
 	http.HandleFunc("/checkedout", makeGenericHandler(checkedoutHandler))
+	http.HandleFunc("/checkin.html", makeHandler(checkinHandler, memberIds, memberFNames))
+	http.HandleFunc("/checkedin", makeGenericHandler(checkedinHandler))
 	http.ListenAndServe(":8080", nil)
 }
