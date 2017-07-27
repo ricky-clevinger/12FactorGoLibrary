@@ -1,3 +1,5 @@
+      #!/bin/sh
+      
       cd go-library-source
       export GOPATH=$PWD
       export PATH=$PATH:$GOPATH
