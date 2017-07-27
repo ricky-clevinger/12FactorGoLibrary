@@ -15,6 +15,6 @@ run:
   args:
     - -exc
     - |
-      chmod +x build.sh
+      chmod +x go-library-source/src/12FactorGoLibrary/ci/build.sh
       #unitesting
       #go test
