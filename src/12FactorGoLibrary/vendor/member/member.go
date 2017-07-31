@@ -4,17 +4,46 @@ package member
 //Last Updated: 7/26/2017
 
 import (
-	//"os"
-	"fmt"	
+	"os"
+	//"fmt"	
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 //Gets the connection string "cgidevlib:Password1@tcp(cgiprojdevlibrary.cxyeb3wmov3g.us-east-1.rds.amazonaws.com:9871)/cgiprojdevlibrary"
-var connectionString = "cgidevlib:Password1@tcp(cgiprojdevlibrary.cxyeb3wmov3g.us-east-1.rds.amazonaws.com:9871)/cgiprojdevlibrary"
+var connectionString = os.Getenv("LIBRARY")
+
+//Member Type
+type Member struct {
+	Member_id int
+	Member_fname string
+	Member_lname string
+}
+
+//Get Members
+func GetMembers() []Member {
+	
+	var members []Member
+
+	db, err := sql.Open("mysql", connectionString)
+	checkErr(err)
+	defer db.Close()
+
+	memberRows, err := db.Query("SELECT member_id, member_fname, member_lname FROM member")
+	checkErr(err)
+	
+	for memberRows.Next() {
+		m := Member{}
+		err = memberRows.Scan(&m.Member_id, &m.Member_fname, &m.Member_lname)
+		checkErr(err)
+		members = append(members, m)
+	}
+
+	return members
+}
 
 //Return an array of IDs for each member in the db
-func GetIds() []int {
+/*func GetIds() []int {
 	var memberIds []int
 	
 	db, err := sql.Open("mysql", connectionString)
@@ -109,7 +138,7 @@ func GetLNameById(memberId int) string {
 	}
 
 	return ""
-}
+}*/
 
 //Checks for errors
 func checkErr(err error) {
