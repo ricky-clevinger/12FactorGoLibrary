@@ -1,6 +1,5 @@
 #!/bin/sh
 set -e -u -x
-cd ../../..
 ls -a
 export GOPATH=$PWD
 export PATH=$PATH:$GOPATH
