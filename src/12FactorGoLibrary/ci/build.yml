@@ -14,15 +14,4 @@ outputs:
 - name: built-project
 
 run:
-  path: sh
-  args:
-    - -exc
-    - |
-      cd go-library-source
-      export GOPATH=$PWD
-      export PATH=$PATH:$GOPATH
-      cd src
-      cd 12FactorGoLibrary
-      go build index.go
-      ls -a
-      cd $GOPATH
+  path: go-library-source/src/12FactorGoLibrary/ci/build.sh
