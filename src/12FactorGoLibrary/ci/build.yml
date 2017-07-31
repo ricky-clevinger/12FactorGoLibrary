@@ -20,4 +20,4 @@ run:
     - |
       cd go-library-source/src/12FactorGoLibrary/ci
       chmod +x build.sh
-      ./build
+      ./build.sh
