@@ -5,27 +5,63 @@ resources:
   source:
     uri: https://github.com/christopherneuhardt/12FactorGoLibrary
     branch: master
-- name: go-library-dev
+
+- name: library-deploy-test
   type: cf
   source:
-    api: {{cf-api}}
-    username: {{cf-username}}
-    password: {{cf-password}}
-    organization: {{cf-organization}}
-    space: {{cf-space}}
+    api: {{tst-cf-api}}
+    username: {{tst-cf-username}}
+    password: {{tst-cf-password}}
+    organization: {{tst-cf-organization}}
+    space: {{tst-cf-space}}
     skip_cert_check: true
+
+- name: library-deploy-prod
+  type: cf
+  source:
+    api: {{prod-cf-api}}
+    username: {{prod-cf-username}}
+    password: {{prod-cf-password}}
+    organization: {{prod-cf-organization}}
+    space: {{prod-cf-space}}
+    skip_cert_check: true
+    
 jobs:
-- name: deploy-go-library-dev
+- name: unit-test-go-job
   serial: true
   plan:
-  - {get: go-library-source, trigger: true}
+  - get: go-library-source
+    trigger: true
   - task: go-unit-tests
     file: go-library-source/src/12FactorGoLibrary/ci/goUnitTest.yml
     privileged: true
+
+- name: deploy-test
+  serial: true
+  plan:
+  - get: go-library-source
+    passed: [ unit-test-go-job ]
+    trigger: true
   - task: build-deploy-go-library
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
     privileged: true
-  - put: go-library-dev
+  - put: library-deploy-test
+    params:
+       manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
+       path: go-library-source/src/12FactorGoLibrary
+  - task: functionalTestLibrary
+    privileged: true
+    file: go-library-source/src/12FactorGoLibrary/ci/functionalTest.yml
+- name: deploy-prod
+  serial: true
+  plan:
+  - get: go-library-source
+    passed: [ deploy-test ]
+    trigger: false
+  - task: build-deploy-go-library
+    file: go-library-source/src/12FactorGoLibrary/ci/build.yml
+    privileged: true
+  - put: library-deploy-prod
     params:
        manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
        path: go-library-source/src/12FactorGoLibrary
