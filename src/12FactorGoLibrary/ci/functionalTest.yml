@@ -3,7 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: selenium/standalone-chrome
+    repository: maven
     tag: "latest"
 
 inputs:
@@ -19,6 +19,5 @@ run:
   - -exc
   - |
     cd go-library-source/src/12FactorGoLibrary/ci
-    javac libraryTests.java
-    java libraryTests
     java -version
+    mvn test
