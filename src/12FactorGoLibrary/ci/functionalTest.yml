@@ -20,5 +20,4 @@ run:
   - |
     cd go-library-source/src/12FactorGoLibrary/ci/LibraryTest
     java -version
-    sudo apt-get install selenium
     mvn test
