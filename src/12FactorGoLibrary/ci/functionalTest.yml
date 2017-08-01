@@ -15,6 +15,7 @@ inputs:
 
 run:
   path: sh
+  user: root
   args:
   - -exc
   - |
