@@ -21,4 +21,5 @@ run:
     cd go-library-source/src/12FactorGoLibrary/ci/selenium
     java -version
     ip addr show
+    apt-get install maven
     mvn clean test
