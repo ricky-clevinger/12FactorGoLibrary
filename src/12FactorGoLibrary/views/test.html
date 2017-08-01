@@ -1,5 +1,7 @@
-{{.Member_id}}
-{{.Member_fname}}
-{{.Member_lname}}
+{{range .Members}}
+    {{ .Member_id }}
+{{end}}
 
-<!--{{.Books}}-->
+{{range .Books}}
+    {{ .Book_id }} {{ .Book_title }} {{ .Book_out_date}}
+{{end}}

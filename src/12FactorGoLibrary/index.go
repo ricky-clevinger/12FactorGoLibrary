@@ -1,7 +1,7 @@
 package main
 
 //Author: C Neuhardt
-//Last Updated: 7/26/2017
+//Last Updated: 8/1/2017
 
 import (
 	"os"
@@ -20,30 +20,28 @@ var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html|checkout.
 var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
 
 //Currently not used
-type Page struct {
+/*type Page struct {
 	Member_id []int
 	Member_fname []string
 	Member_lname []string
+	Book_id []int
+	Book_title []string
+	Book_authF []string
+	Book_authL []string
+	Library_id []int
+	Book_check []int
+	Mid []int
+	Book_out_date []string
+}*/
+
+type Page struct {
+	Members []member.Member
 	Books []book.Book
 }
 
 func loadPage(members []member.Member, books []book.Book) *Page {
-	var member_ids []int
-	for i := 0; i < len(members); i += 1 {
-		member_ids = append(member_ids, members[i].Member_id)
-	}
-
-	var member_fnames []string
-	for i := 0; i < len(members); i += 1 {
-		member_fnames = append(member_fnames, members[i].Member_fname)
-	}
-
-	var member_lnames []string
-	for i := 0; i < len(members); i += 1 {
-		member_lnames = append(member_lnames, members[i].Member_lname)
-	}
-
-	return &Page{Member_id:member_ids, Member_fname:member_fnames, Member_lname:member_lnames, Books:books}
+	//return &Page{Member_id:member_ids, Member_fname:member_fnames, Member_lname:member_lnames, Book_id:book_ids, Book_title:book_titles, Book_authF:book_authFs, Book_authL:book_authLs, Library_id:lib_ids, Book_check:book_checks, Mid:mids, Book_out_date:book_out_dates}
+	return &Page{Members:members, Books:books}
 }
 
 //Renders HTML page
