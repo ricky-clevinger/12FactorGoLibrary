@@ -58,10 +58,9 @@
                         <div class="col-xs-3">
                             <label for="selPerson">Person checking out this book</label>
                             <select class="form-control" id="selPerson">
-                                <option>Placeholder 1</option>
-                                <option>Placeholder 2</option>
-                                <option>Placeholder 3</option>
-                                <option>Placeholder 4</option>
+                                {{ range .Members }}
+                                    <option value="{{ .Member_id }}" >{{ .Member_fname }} {{ .Member_lname }}</option>
+                                {{end}}
                             </select>
                         </div>
                     </div>
@@ -69,10 +68,9 @@
                         <div class="col-xs-3">
                             <label for="selBook">Book being checked out</label>
                             <select class="form-control" id="selBook">
-                                <option>Placeholder 1</option>
-                                <option>Placeholder 2</option>
-                                <option>Placeholder 3</option>
-                                <option>Placeholder 4</option>
+                                {{ range .Books }}
+                                    <option value="{{ .Book_id }}" >{{ .Book_title }}</option>
+                                {{end}}
                             </select>
                         </div>
                     </div>

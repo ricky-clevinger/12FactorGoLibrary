@@ -33,7 +33,7 @@ type Book struct{
 //Create new Book Slice Type
 //Typically used outside of book.go
 //e.g. BookVar := book.NewSlice()
-func NewSlice() []*Book {return new([]Book)}
+func NewSlice() *[]Book {return new([]Book)}
 
 //Get Book
 //Returns Book Slice of multiple books
