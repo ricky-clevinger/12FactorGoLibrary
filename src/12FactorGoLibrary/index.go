@@ -105,7 +105,9 @@ func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
 	memberId := r.FormValue("selPerson")
 	bookId := r.FormValue("selBook")
 	date := r.FormValue("selDateOut")
-
+	
+	fmt.Println(memberId, bookId, date)
+	
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 	checkErr(err)
 	defer db.Close()

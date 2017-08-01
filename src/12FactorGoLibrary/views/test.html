@@ -1,7 +1,7 @@
 {{range .Members}}
-    {{ .Member_id }}
+    {{ .Member_id }} {{ .Member_fname}} {{ .Member_lname}}
 {{end}}
 
 {{range .Books}}
-    {{ .Book_id }} {{ .Book_title }} {{ .Book_out_date}}
+    {{ .Book_id }} {{ .Book_title }} {{ .Mid }} {{ .Book_out_date }}
 {{end}}
