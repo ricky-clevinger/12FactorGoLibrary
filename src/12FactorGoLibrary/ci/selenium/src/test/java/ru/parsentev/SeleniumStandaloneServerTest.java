@@ -29,7 +29,7 @@ public class SeleniumStandaloneServerTest {
 
 	private void execute(final DesiredCapabilities capability) throws MalformedURLException {
 		WebDriver driver = new RemoteWebDriver(
-				new URL("http://localhost:4444/wd/hub"), capability
+				new URL("http://10.254.0.6:4444/wd/hub"), capability
 		);
 		driver.get("http://www.javacodegeeks.com/");
 		WebElement element = driver.findElement(By.name("s"));
