@@ -1,7 +1,7 @@
 package main
 
 //Author: C Neuhardt
-//Last Updated: 7/26/2017
+//Last Updated: 8/1/2017
 
 import (
 	"os"

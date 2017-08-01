@@ -2,10 +2,11 @@ package book
 
 // Author: Jonathan Quilliams
 //Created: 7/25/17
-// Edited: 7/26/17
+// Edited: 8/1/17
 //Purpose: - Query book information/SQL from databse
-//		   - Create a book type
-//		   - Func
+//		   - Create a Book type
+//		   - func NewSlice() -- Creates New slice of Book [NOT USED]
+//		   - Getters of Book_id, Book_title, Book_authF, Book_authL, Library_id, Book_check, Mid, and Book_out_date [NOT USED]
 
 import (
 	"os"
@@ -32,7 +33,7 @@ type Book struct{
 //Create new Book Slice Type
 //Typically used outside of book.go
 //e.g. BookVar := book.NewSlice()
-func NewSlice() *[]Book {return new([]Book)}
+func NewSlice() []*Book {return new([]Book)}
 
 //Get Book
 //Returns Book Slice of multiple books
@@ -54,7 +55,13 @@ func GetBook() []Book {
 		b := Book{} //book type
 		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
 		checkErr(err)
-		books = append(books, b)
+		if b.Book_out_date.Valid{
+			books = append(books, b)
+		} else {
+			b.Book_out_date.String = ""
+			books = append(books, b)
+		}
+
 	}
 
 	return books
