@@ -53,15 +53,14 @@
         <div class="container theme-showcase" role="main">
             <div class="container">
                 <h2>Check In a Book</h2>
-                <form class="form-horizontal" action="#">
+                <form class="form-horizontal" action="checkedin">
                     <div class="form-group">
                         <div class="col-xs-3">
                             <label for="selBook">Book being checked in</label>
-                            <select class="form-control" id="selBook">
-                                <option>Placeholder 1</option>
-                                <option>Placeholder 2</option>
-                                <option>Placeholder 3</option>
-                                <option>Placeholder 4</option>
+                            <select class="form-control" id="selBook" name="selBook">
+                                {{ range .Books }}
+                                    <option value="{{ .Book_id }}" >{{ .Book_title }}</option>
+                                {{end}}
                             </select>
                         </div>
                     </div>

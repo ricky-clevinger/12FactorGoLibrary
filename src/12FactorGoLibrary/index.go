@@ -5,7 +5,7 @@ package main
 
 import (
 	"os"
-	"fmt"
+	//"fmt"
 	"database/sql"
 	"html/template"
 	"net/http"
@@ -14,6 +14,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"member"
+	"time"
 )
 
 var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
@@ -102,11 +103,11 @@ func checkoutHandler(w http.ResponseWriter, r *http.Request, members []member.Me
 
 //Handles the checkout page
 func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
+	current_time := time.Now().Local()
+	
 	memberId := r.FormValue("selPerson")
 	bookId := r.FormValue("selBook")
-	date := r.FormValue("selDateOut")
-	
-	fmt.Println(memberId, bookId, date)
+	date := current_time.Format("2006-01-02 15:04:05")
 	
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 	checkErr(err)
@@ -135,31 +136,20 @@ func checkinHandler(w http.ResponseWriter, r *http.Request, members []member.Mem
 
 //Handles the checkin page
 func checkedinHandler(w http.ResponseWriter, r *http.Request) {
-	var memberId int
+	current_time := time.Now().Local()
+	
 	bookId := r.FormValue("selBook")
-	date := r.FormValue("selDateIn")
+	date := current_time.Format("2006-01-02 15:04:05")
 
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 	checkErr(err)
 	defer db.Close()
 
-	//Get Member ID
-	queryString := fmt.Sprintf("SELECT mid FROM books WHERE book_id = %d", bookId)
-	rows, err := db.Query(queryString)
-	checkErr(err)
-	
-	for rows.Next() {
-		var mid int
-		err = rows.Scan(&mid)
-		checkErr(err)
-		memberId = mid
-	}
-
 	//Log transaction
-	stmt, err := db.Prepare("INSERT INTO transaction (book_id, tran_date, che, mid) VALUES (?, ?, 2, ?)")
+	stmt, err := db.Prepare("INSERT INTO transaction (book_id, tran_date, che, mid) VALUES (?, ?, 1, (SELECT mid FROM books WHERE book_id = ?))")
 	checkErr(err)
 
-	stmt.Exec(bookId, date, memberId)
+	stmt.Exec(bookId, date, bookId)
 
 	//Update checkout status
 	stmt2, err := db.Prepare("UPDATE books SET book_check=1, mid=0, book_out_date=null WHERE book_id=?")
