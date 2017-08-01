@@ -23,5 +23,5 @@ run:
     java -version
     ip addr show
     apt-get update
-    apt-get install maven
+    apt-get -y install maven
     mvn clean test
