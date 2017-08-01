@@ -23,11 +23,6 @@ import static org.junit.Assert.assertThat;
 public class SeleniumStandaloneServerTest {
 
 	@Test
-	public void executeFirefoxDriver() throws MalformedURLException {
-		this.execute(DesiredCapabilities.firefox());
-	}
-
-	@Test
 	public void executeChrome() throws MalformedURLException {
 		this.execute(DesiredCapabilities.chrome());
 	}
