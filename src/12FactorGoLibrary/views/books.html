@@ -54,7 +54,7 @@
         <!-- Main Container -->
         <div class="container theme-showcase" role="main">
             <div class="container">
-                <h2>Members List</h2>
+                <h2>Books List</h2>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -62,16 +62,23 @@
                             <th>Book Title</th>
                             <th>Author</th>
                             <th>Library ID</th>
+                            <th>Checked In/Out</th>
+                            <th>Checked Out By</th>
+                            <th>Check Out Date</th>
                             <th></th>
 
                         </tr>
                     </thead>
                     <tbody>
-                        {{ range .Members }}
+                        {{ range .Books }}
                             <tr>
-                                <td>{{ .Member_id }}</td>
-                                <td>{{ .Member_fname }}</td>
-                                <td>{{ .Member_lname }}</td>
+                                <td>{{ .Book_id }}</td>
+                                <td>{{ .Book_title }}</td>
+                                <td>{{ .Book_authF }} {{ .Book_authL }}</td>
+                                <td>{{ .Library_id }}</td>
+                                <td>{{ .Book_check }}</td>
+                                <td>{{ .Mid }}</td>
+                                <td>{{ .Book_out_date.Value }}</td>
                             </tr>
                         {{ end }}
                     </tbody>
