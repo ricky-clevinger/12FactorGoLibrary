@@ -3,7 +3,7 @@
      Created By: Chris Neuhardt
      Created On: 7/17/17
      Updated By: Jonathan Quilliams
-    Last Update: 7/17/17
+    Last Update: 8/1/17
       File Name: checkout.html
 
    Dependencies: bootstrap 3.3.7, jquery 3.2.1, mysql, javascript, seldateget.js
@@ -53,11 +53,11 @@
         <div class="container theme-showcase" role="main">
             <div class="container">
                 <h2>Check Out a Book</h2>
-                <form class="form-horizontal" action="#">
+                <form class="form-horizontal" action="checkedout" method="POST">
                     <div class="form-group">
                         <div class="col-xs-3">
                             <label for="selPerson">Person checking out this book</label>
-                            <select class="form-control" id="selPerson">
+                            <select class="form-control" id="selPerson" name="selPerson">
                                 {{ range .Members }}
                                     <option value="{{ .Member_id }}" >{{ .Member_fname }} {{ .Member_lname }}</option>
                                 {{end}}
@@ -67,7 +67,7 @@
                     <div class="form-group">
                         <div class="col-xs-3">
                             <label for="selBook">Book being checked out</label>
-                            <select class="form-control" id="selBook">
+                            <select class="form-control" id="selBook" name="selBook">
                                 {{ range .Books }}
                                     <option value="{{ .Book_id }}" >{{ .Book_title }}</option>
                                 {{end}}
