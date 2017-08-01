@@ -2,4 +2,7 @@
 {{.Member_fname}}
 {{.Member_lname}}
 
-<!--{{.Books}}-->
+{{.}}
+{{range .}}
+{{ .Book_id }} {{.Book_title}}
+{{end}}

@@ -24,7 +24,14 @@ type Page struct {
 	Member_id []int
 	Member_fname []string
 	Member_lname []string
-	Books []book.Book
+	Book_id []int
+	Book_title []string
+	Book_authF []string
+	Book_authL []string
+	Library_id []int
+	Book_check []int
+	Mid []int
+	Book_out_date []string
 }
 
 func loadPage(members []member.Member, books []book.Book) *Page {
@@ -43,7 +50,51 @@ func loadPage(members []member.Member, books []book.Book) *Page {
 		member_lnames = append(member_lnames, members[i].Member_lname)
 	}
 
-	return &Page{Member_id:member_ids, Member_fname:member_fnames, Member_lname:member_lnames, Books:books}
+	var book_ids []int
+	for i := 0; i < len(books); i += 1 {
+		book_ids = append(book_ids, books[i].Book_id)
+	}
+
+	var book_titles []string
+	for i := 0; i < len(books); i += 1 {
+		book_titles = append(book_titles, books[i].Book_title)
+	}
+
+	var book_authFs []string
+	for i := 0; i < len(books); i += 1 {
+		book_authFs = append(book_authFs, books[i].Book_authF)
+	}
+
+	var book_authLs []string
+	for i := 0; i < len(books); i += 1 {
+		book_authLs = append(book_authLs, books[i].Book_authL)
+	}
+
+	var lib_ids []int
+	for i := 0; i < len(books); i += 1 {
+		lib_ids = append(lib_ids, books[i].Library_id)
+	}
+
+	var book_checks []int
+	for i := 0; i < len(books); i += 1{
+		book_checks = append(book_checks, books[i].Book_check)
+	}
+
+	var mids []int
+	for i := 0; i < len(books); i += 1{
+		mids = append(mids, books[i].Mid)
+	}
+
+	var book_out_dates []string
+	for i := 0; i < len(books); i += 1{
+		if bod := books[i].Book_out_date; bod.Valid{
+			book_out_dates = append(book_out_dates, books[i].Book_out_date.String)
+		} else {
+			book_out_dates = append(book_out_dates, "")
+		}
+	}
+
+	return &Page{Member_id:member_ids, Member_fname:member_fnames, Member_lname:member_lnames, Book_id:book_ids, Book_title:book_titles, Book_authF:book_authFs, Book_authL:book_authLs, Library_id:lib_ids, Book_check:book_checks, Mid:mids, Book_out_date:book_out_dates}
 }
 
 //Renders HTML page
