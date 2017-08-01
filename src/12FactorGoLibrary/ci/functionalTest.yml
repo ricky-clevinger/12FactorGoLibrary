@@ -18,7 +18,7 @@ run:
   args:
   - -exc
   - |
-    cd go-library-source/src/12FactorGoLibrary/ci/LibraryTest
+    cd go-library-source/src/12FactorGoLibrary/ci/selenium1
     java -version
     ip addr show
     curl -O http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip
