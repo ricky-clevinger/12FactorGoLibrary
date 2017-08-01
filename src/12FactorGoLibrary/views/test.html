@@ -1,8 +1,7 @@
-{{.Member_id}}
-{{.Member_fname}}
-{{.Member_lname}}
+{{range .Members}}
+    {{ .Member_id }}
+{{end}}
 
-{{.}}
-{{range .}}
-{{ .Book_id }} {{.Book_title}}
+{{range .Books}}
+    {{ .Book_id }} {{ .Book_title }}
 {{end}}
