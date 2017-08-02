@@ -67,6 +67,7 @@ func GetBook() []Book {
 	return books
 }// end GetBook()
 
+<<<<<<< HEAD
 //Returns Book Slice of multiple books that are not checked out
 func GetCheckedInBook() []Book {
 	
@@ -319,6 +320,8 @@ func GetBooksNotOut() []string {
 } */
 
 
+=======
+>>>>>>> 7b26ac2f4215240e282a1cea34b89838161343cc
 //Checks for errors
 func checkErr(err error) {
 	if err != nil {

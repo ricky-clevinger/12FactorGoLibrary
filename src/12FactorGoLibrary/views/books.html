@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <!-- >
-     Created By: Chris Neuhardt
-     Created On: 7/17/17
-     Updated By: Chris Neuhardt
+     Created By: Jonathan Quilliams
+     Created On: 8/1/17
+     Updated By: Jonathan Quilliams
     Last Update: 8/1/17
-      File Name: checkin.html
+      File Name: members.html
 
    Dependencies: bootstrap 3.3.7, jquery 3.2.1, mysql, javascript, seldateget.js
 <! -->
@@ -43,41 +43,46 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.html">Home</a></li>
-                    <li><a href="admin.html">Admin</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li class="active" ><a href="admin.html">Admin</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
         </nav>
+
+
         <!-- Main Container -->
         <div class="container theme-showcase" role="main">
             <div class="container">
-                <h2>Check In a Book</h2>
-                <form class="form-horizontal" action="checkedin">
-                    <div class="form-group">
-                        <div class="col-xs-3">
-                            <label for="selBook">Book being checked in</label>
-                            <select class="form-control" id="selBook" name="selBook">
-                                {{ range .Books }}
-                                    <option value="{{ .Book_id }}" >{{ .Book_title }}</option>
-                                {{end}}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-3">
-                            <label for="selDateIn">Date In</label>
-                            <input disabled="" class="form-control" id="selDate" name="selDate"></input>
-                        </div>
-                        <!-- Custom JS to Capture the Date -->
-                        <script src="../resources/js/seldateget.js"></script>
-                    </div>
-                    <div class="form-group">
-                        <div div="col-sm-offset-2">
-                            <button type="submit" class="btn btn-default">Submit</button>
-                        </div>
-                    </div>
-                </form>
+                <h2>Books List</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID #</th>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Library ID</th>
+                            <th>Checked In/Out</th>
+                            <th>Checked Out By</th>
+                            <th>Check Out Date</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .Books }}
+                            <tr>
+                                <td>{{ .Book_id }}</td>
+                                <td>{{ .Book_title }}</td>
+                                <td>{{ .Book_authF }} {{ .Book_authL }}</td>
+                                <td>{{ .Library_id }}</td>
+                                <td>{{ .Book_check }}</td>
+                                <td>{{ .Mid }}</td>
+                                <td>{{ .Book_out_date.Value }}</td>
+                            </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
             </div>
             <hr></hr>
             <footer class="footer">
