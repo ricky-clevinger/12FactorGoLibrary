@@ -133,7 +133,7 @@ func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
 	stmt.Exec(bookId, date, memberId)
 
 	//Update checkout status
-	stmt2, err := db.Prepare("UPDATE books SET book_check=2, mid=?, book_out_date=? WHERE book_id=?")
+	stmt2, err := db.Prepare("UPDATE books SET book_check=2, mid=?, book_out_date=? WHERE book_id=? AND book_check = 1")
 	checkErr(err)
 
 	stmt2.Exec(memberId, date, bookId)
@@ -171,7 +171,7 @@ func checkedinHandler(w http.ResponseWriter, r *http.Request) {
 	stmt.Exec(bookId, date, bookId)
 
 	//Update checkout status
-	stmt2, err := db.Prepare("UPDATE books SET book_check=1, mid=0, book_out_date=null WHERE book_id=?")
+	stmt2, err := db.Prepare("UPDATE books SET book_check=1, mid=0, book_out_date=null WHERE book_id=? AND book_check = 2")
 	checkErr(err)
 
 	stmt2.Exec(bookId)
