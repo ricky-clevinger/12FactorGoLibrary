@@ -17,8 +17,8 @@ import (
 	"time"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
+var validPath = regexp.MustCompile("^/(index.html|admin.html|books.html|members.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/members.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
 
 type Page struct {
 	Members []member.Member
@@ -67,6 +67,29 @@ func adminHandler(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "admin", p)
 }
 
+//Handles the books page
+func booksHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
+	members = member.GetMembers()
+	books = book.GetBook()
+
+	p := loadPage(members, books)
+	renderTemplate(w, "books", p)
+}
+
+//Handles the members page
+func membersHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
+	members = member.GetMembers()
+
+	p := loadPage(members, books)
+	renderTemplate(w, "members", p)
+}
+
 //Handles the test page
 func testHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
@@ -110,7 +133,7 @@ func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
 	stmt.Exec(bookId, date, memberId)
 
 	//Update checkout status
-	stmt2, err := db.Prepare("UPDATE books SET book_check=2, mid=?, book_out_date=? WHERE book_id=?")
+	stmt2, err := db.Prepare("UPDATE books SET book_check=2, mid=?, book_out_date=? WHERE book_id=? AND book_check = 1")
 	checkErr(err)
 
 	stmt2.Exec(memberId, date, bookId)
@@ -148,7 +171,7 @@ func checkedinHandler(w http.ResponseWriter, r *http.Request) {
 	stmt.Exec(bookId, date, bookId)
 
 	//Update checkout status
-	stmt2, err := db.Prepare("UPDATE books SET book_check=1, mid=0, book_out_date=null WHERE book_id=?")
+	stmt2, err := db.Prepare("UPDATE books SET book_check=1, mid=0, book_out_date=null WHERE book_id=? AND book_check = 2")
 	checkErr(err)
 
 	stmt2.Exec(bookId)
@@ -174,6 +197,8 @@ func main() {
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	http.HandleFunc("/index.html", makeHandler(indexHandler))
 	http.HandleFunc("/admin.html", makeHandler(adminHandler))
+	http.HandleFunc("/books.html", makeHandler(booksHandler))
+	http.HandleFunc("/members.html", makeHandler(membersHandler))
 	http.HandleFunc("/test.html", makeHandler(testHandler))
 	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler))
 	http.HandleFunc("/checkedout", makeHandler(checkedoutHandler))
