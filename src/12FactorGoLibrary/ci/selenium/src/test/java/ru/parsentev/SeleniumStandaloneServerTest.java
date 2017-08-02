@@ -23,18 +23,13 @@ import static org.junit.Assert.assertThat;
 public class SeleniumStandaloneServerTest {
 
 	@Test
-	public void executeFirefoxDriver() throws MalformedURLException {
-		this.execute(DesiredCapabilities.firefox());
-	}
-
-	@Test
 	public void executeChrome() throws MalformedURLException {
 		this.execute(DesiredCapabilities.chrome());
 	}
 
 	private void execute(final DesiredCapabilities capability) throws MalformedURLException {
 		WebDriver driver = new RemoteWebDriver(
-				new URL("http://localhost:4444/wd/hub"), capability
+				new URL("http://10.254.0.6:4444/wd/hub"), capability
 		);
 		driver.get("http://www.javacodegeeks.com/");
 		WebElement element = driver.findElement(By.name("s"));

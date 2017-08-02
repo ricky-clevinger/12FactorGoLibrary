@@ -3,7 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: maven
+    repository: selenium/standalone-chrome-debug
     tag: "latest"
 
 inputs:
@@ -15,14 +15,10 @@ inputs:
 
 run:
   path: sh
+  user: root
   args:
   - -exc
   - |
-    cd go-library-source/src/12FactorGoLibrary/ci/LibraryTest
+    cd go-library-source/src/12FactorGoLibrary/ci/selenium/src/test/java/ru/parsentev/
     java -version
-    ip addr show
-    curl -O http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip
-    unzip chromedriver_linux64.zip
-    curl -O https://selenium-release.storage.googleapis.com/3.4/selenium-server-standalone-3.4.0.jar
-    java -jar selenium-server-standalone-3.4.0.jar &
-    mvn clean test
+    java SeleniumStandaloneServerTest
