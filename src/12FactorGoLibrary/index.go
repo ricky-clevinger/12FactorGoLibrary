@@ -20,28 +20,12 @@ import (
 var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
 var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
 
-//Currently not used
-/*type Page struct {
-	Member_id []int
-	Member_fname []string
-	Member_lname []string
-	Book_id []int
-	Book_title []string
-	Book_authF []string
-	Book_authL []string
-	Library_id []int
-	Book_check []int
-	Mid []int
-	Book_out_date []string
-}*/
-
 type Page struct {
 	Members []member.Member
 	Books []book.Book
 }
 
 func loadPage(members []member.Member, books []book.Book) *Page {
-	//return &Page{Member_id:member_ids, Member_fname:member_fnames, Member_lname:member_lnames, Book_id:book_ids, Book_title:book_titles, Book_authF:book_authFs, Book_authL:book_authLs, Library_id:lib_ids, Book_check:book_checks, Mid:mids, Book_out_date:book_out_dates}
 	return &Page{Members:members, Books:books}
 }
 
@@ -54,19 +38,7 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 }
 
 //Validates path and calls handler
-func makeHandler(fn func(http.ResponseWriter, *http.Request, []member.Member, []book.Book), members []member.Member, books []book.Book) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		/*m := validPath.FindStringSubmatch(r.URL.Path)
-		if m == nil {
-			http.NotFound(w, r)
-			return
-		}*/
-		fn(w, r, members, books)
-	}
-}
-
-//Validates path and calls handler
-func makeGenericHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		/*m := validPath.FindStringSubmatch(r.URL.Path)
 		if m == nil {
@@ -78,25 +50,43 @@ func makeGenericHandler(fn func(http.ResponseWriter, *http.Request)) http.Handle
 }
 
 //Handles the index page
-func indexHandler(w http.ResponseWriter, r *http.Request, members []member.Member, books []book.Book) {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
 	p := loadPage(members, books)
 	renderTemplate(w, "index", p)
 }
 
 //Handles the admin page
-func adminHandler(w http.ResponseWriter, r *http.Request, members []member.Member, books []book.Book) {
+func adminHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
 	p := loadPage(members, books)
 	renderTemplate(w, "admin", p)
 }
 
 //Handles the test page
-func testHandler(w http.ResponseWriter, r *http.Request, members []member.Member, books []book.Book) {
+func testHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
+	members = member.GetMembers()
+	books = book.GetBook()
+	
 	p := loadPage(members, books)
 	renderTemplate(w, "test", p)
 }
 
 //Handles the checkout page
-func checkoutHandler(w http.ResponseWriter, r *http.Request, members []member.Member, books []book.Book) {
+func checkoutHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	members = member.GetMembers()
+	
+	var books []book.Book
+	books = book.GetCheckedInBook()
+	
 	p := loadPage(members, books)
 	renderTemplate(w, "checkout", p)
 }
@@ -129,7 +119,13 @@ func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 //Handles the checkin page
-func checkinHandler(w http.ResponseWriter, r *http.Request, members []member.Member, books []book.Book) {
+func checkinHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	members = member.GetMembers()
+	
+	var books []book.Book
+	books = book.GetCheckedOutBook()
+	
 	p := loadPage(members, books)
 	renderTemplate(w, "checkin", p)
 }
@@ -174,20 +170,14 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var members []member.Member
-	var books []book.Book
-
-	members = member.GetMembers()
-	books = book.GetBook()
-
 	http.HandleFunc("/", redirect)
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
-	http.HandleFunc("/index.html", makeHandler(indexHandler, members, books))
-	http.HandleFunc("/admin.html", makeHandler(adminHandler, members, books))
-	http.HandleFunc("/test.html", makeHandler(testHandler, members, books))
-	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler, members, books))
-	http.HandleFunc("/checkedout", makeGenericHandler(checkedoutHandler))
-	http.HandleFunc("/checkin.html", makeHandler(checkinHandler, members, books))
-	http.HandleFunc("/checkedin", makeGenericHandler(checkedinHandler))
+	http.HandleFunc("/index.html", makeHandler(indexHandler))
+	http.HandleFunc("/admin.html", makeHandler(adminHandler))
+	http.HandleFunc("/test.html", makeHandler(testHandler))
+	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler))
+	http.HandleFunc("/checkedout", makeHandler(checkedoutHandler))
+	http.HandleFunc("/checkin.html", makeHandler(checkinHandler))
+	http.HandleFunc("/checkedin", makeHandler(checkedinHandler))
 	http.ListenAndServe(":8080", nil)
 }
