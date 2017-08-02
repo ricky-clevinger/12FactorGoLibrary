@@ -90,7 +90,7 @@ func GetCheckedInBook() []Book {
 			books = append(books, b)
 		} else {
 			b.Book_out_date.String = ""
-			books = append(books, b
+			books = append(books, b)
 		}
 
 	}
