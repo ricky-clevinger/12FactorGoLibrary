@@ -17,8 +17,8 @@ import (
 	"time"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|admin.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
+var validPath = regexp.MustCompile("^/(index.html|admin.html|books.html|members.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/members.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
 
 type Page struct {
 	Members []member.Member
@@ -65,6 +65,29 @@ func adminHandler(w http.ResponseWriter, r *http.Request) {
 	
 	p := loadPage(members, books)
 	renderTemplate(w, "admin", p)
+}
+
+//Handles the books page
+func booksHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
+	members = member.GetMembers()
+	books = book.GetBook()
+
+	p := loadPage(members, books)
+	renderTemplate(w, "books", p)
+}
+
+//Handles the members page
+func membersHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
+	members = member.GetMembers()
+
+	p := loadPage(members, books)
+	renderTemplate(w, "members", p)
 }
 
 //Handles the test page
@@ -174,6 +197,8 @@ func main() {
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	http.HandleFunc("/index.html", makeHandler(indexHandler))
 	http.HandleFunc("/admin.html", makeHandler(adminHandler))
+	http.HandleFunc("/books.html", makeHandler(booksHandler))
+	http.HandleFunc("/members.html", makeHandler(membersHandler))
 	http.HandleFunc("/test.html", makeHandler(testHandler))
 	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler))
 	http.HandleFunc("/checkedout", makeHandler(checkedoutHandler))
