@@ -21,4 +21,4 @@ run:
   - |
     cd go-library-source/src/12FactorGoLibrary/ci/selenium
     java -version
-    mvn clean test
+    java SeleniumStandaloneServerTest
