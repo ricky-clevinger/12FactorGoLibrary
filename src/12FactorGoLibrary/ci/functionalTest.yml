@@ -20,8 +20,5 @@ run:
   - |
     cd go-library-source/src/12FactorGoLibrary/ci
     java -version
-    ls -a
-    cp GoLibraryFunctionalTest.jar /opt/selenium
-    cd /opt/selenium
     ls
-    java -jar GoLibraryFunctionalTest.jar
+    java -jar checkInTest.jar
