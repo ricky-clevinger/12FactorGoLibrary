@@ -7,7 +7,6 @@ image_resource:
     tag: "latest"
 
 inputs:
-- name: built-project
 - name: go-library-source
 
 #outputs:
