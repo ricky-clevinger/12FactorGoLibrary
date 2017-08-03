@@ -19,6 +19,6 @@ run:
   args:
   - -exc
   - |
-    cd go-library-source/src/12FactorGoLibrary/ci/selenium/src/test/java/ru/parsentev/
+    cd go-library-source/src/12FactorGoLibrary/ci
     java -version
-    java SeleniumStandaloneServerTest
+    java checkInGoTest
