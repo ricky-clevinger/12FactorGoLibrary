@@ -129,6 +129,7 @@ func GetCheckedOutBook() []Book {
 	return books
 }
 
+// Return Books under search params
 func GetSearchedBook(s string) []Book {
 	
 	var books []Book //Hold Slice of Book Type
@@ -160,6 +161,23 @@ func GetSearchedBook(s string) []Book {
 	}
 
 	return books
+}
+
+//INSERT New Row into books TABLE
+func AddBook(title string, authF string, authL string) {
+	Book_title := title
+	Book_authF := authF
+	Book_authL := authL
+
+	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+	checkErr(err)
+	defer db.Close()
+
+	//Insert new book instance into table
+	stmt, err := db.Prepare("INSERT INTO books (Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid) VALUES (?, ?, ?, 1, 1, 0)")
+	checkErr(err)
+
+	stmt.Exec(Book_title, Book_authF, Book_authL)
 }
 
 //Checks for errors

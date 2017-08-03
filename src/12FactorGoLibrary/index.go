@@ -17,8 +17,8 @@ import (
 	"time"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|members.html|add-member.html|memberCreated|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/members.html", "views/add-member.html", "views/test.html", "views/checkout.html", "views/checkin.html", "views/results.html"))
+var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|members.html|add-member.html|memberCreated|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/members.html", "views/add-member.html", "views/test.html", "views/checkout.html", "views/checkin.html", "views/results.html"))
 
 type Page struct {
 	Members []member.Member
@@ -77,6 +77,25 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := loadPage(members, books)
 	renderTemplate(w, "books", p)
+}
+
+//Handles the create book page
+func addBookHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
+	p := loadPage(members, books)
+	renderTemplate(w, "add-book", p)
+}
+
+func bookCreatedHandler(w http.ResponseWriter, r *http.Request) {
+	bookTitle := r.FormValue("title")
+	bookAuthF := r.FormValue("fName")
+	bookAuthL := r.FormValue("lName")
+
+	book.AddBook(bookTitle, bookAuthF, bookAuthL)
+
+	http.Redirect(w, r, "/books.html", http.StatusFound)
 }
 
 //Handles the members page
@@ -239,6 +258,8 @@ func main() {
 	http.HandleFunc("/search", makeHandler(searchHandler))
 	http.HandleFunc("/admin.html", makeHandler(adminHandler))
 	http.HandleFunc("/books.html", makeHandler(booksHandler))
+	http.HandleFunc("/add-book.html", makeHandler(addBookHandler))
+	http.HandleFunc("/bookCreated", makeHandler(bookCreatedHandler))
 	http.HandleFunc("/members.html", makeHandler(membersHandler))
 	http.HandleFunc("/add-member.html", makeHandler(addMemberHandler))
 	http.HandleFunc("/memberCreated", makeHandler(memberCreatedHandler))
