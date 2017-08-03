@@ -2,11 +2,10 @@ package book
 
 // Author: Jonathan Quilliams
 //Created: 7/25/17
-// Edited: 8/1/17
+// Edited: 8/3/17
 //Purpose: - Query book information/SQL from databse
 //		   - Create a Book type
 //		   - func NewSlice() -- Creates New slice of Book [NOT USED]
-//		   - Getters of Book_id, Book_title, Book_authF, Book_authL, Library_id, Book_check, Mid, and Book_out_date [NOT USED]
 
 import (
 	"os"
