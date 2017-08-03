@@ -55,6 +55,7 @@
         <div class="container theme-showcase" role="main">
             <div class="container">
                 <h2>Results</h2>
+                <h3>Books</h3>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -77,6 +78,25 @@
                                 <td>{{ .Book_check }}</td>
                                 <td>{{ .Mid }}</td>
                                 <td>{{ .Book_out_date.Value }}</td>
+                            </tr>
+                        {{ end }}
+                    </tbody>
+                </table>
+                <h3>Members</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID #</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{ range .Members }}
+                            <tr>
+                                <td>{{ .Member_id }}</td>
+                                <td>{{ .Member_fname }}</td>
+                                <td>{{ .Member_lname }}</td>
                             </tr>
                         {{ end }}
                     </tbody>

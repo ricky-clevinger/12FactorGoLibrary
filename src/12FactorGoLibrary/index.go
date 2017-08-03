@@ -185,6 +185,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request){
 	var members []member.Member
 	search := r.FormValue("s-bar")
 	books = book.GetSearchedBook(search)
+	members = member.GetSearchedMember(search)
 
 	p := loadPage(members, books)
 	renderTemplate(w, "results", p)
