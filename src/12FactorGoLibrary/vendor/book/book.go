@@ -133,8 +133,7 @@ func GetCheckedOutBook() []Book {
 func GetSearchedBook(s string) []Book {
 	
 	var books []Book //Hold Slice of Book Type
-	var search string //Holds string
-	search = fmt.Sprintf("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE book_title like '%%s%'", s) //Concats %s on searched string ends
+	search :=  fmt.Sprintf("%s%s%s", "%", s, "%")
 
 	//DB Connection
 	db, err := sql.Open("mysql", connectionString)
@@ -142,7 +141,7 @@ func GetSearchedBook(s string) []Book {
 	defer db.Close() //Close after func GetBook ends
 
 	//Prepare entire rows of data within a query
-	bookRows, err := db.Query(search)
+	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE book_title like ?", search)
 	
 	//Check for Errors in DB the Query
 	checkErr(err)
