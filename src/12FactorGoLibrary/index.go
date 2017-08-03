@@ -17,8 +17,8 @@ import (
 	"time"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|admin.html|books.html|members.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/members.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
+var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|members.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/members.html", "views/test.html", "views/checkout.html", "views/checkin.html", "views/results.html"))
 
 type Page struct {
 	Members []member.Member
@@ -179,6 +179,18 @@ func checkedinHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/index.html", http.StatusFound)
 }
 
+func searchHandler(w http.ResponseWriter, r *http.Request){
+	
+	var books []book.Book
+	var members []member.Member
+	search := r.FormValue("s-bar")
+	books = book.GetSearchedBook(search)
+
+	p := loadPage(members, books)
+	renderTemplate(w, "results", p)
+	
+}
+
 //Checks for errors
 func checkErr(err error) {
 	if err != nil {
@@ -196,6 +208,7 @@ func main() {
 	http.HandleFunc("/", redirect)
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	http.HandleFunc("/index.html", makeHandler(indexHandler))
+	http.HandleFunc("/search", makeHandler(searchHandler))
 	http.HandleFunc("/admin.html", makeHandler(adminHandler))
 	http.HandleFunc("/books.html", makeHandler(booksHandler))
 	http.HandleFunc("/members.html", makeHandler(membersHandler))

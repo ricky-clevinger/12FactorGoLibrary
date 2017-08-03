@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <!-- >
      Created By: Jonathan Quilliams
-     Created On: 8/1/17
+     Created On: 8/3/17
      Updated By: Jonathan Quilliams
-    Last Update: 8/1/17
-      File Name: books.html
+    Last Update: 8/3/17
+      File Name: results.html
 
    Dependencies: bootstrap 3.3.7, jquery 3.2.1, mysql, javascript, seldateget.js
 <! -->
@@ -43,8 +43,8 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="index.html">Home</a></li>
-                    <li class="active" ><a href="admin.html">Admin</a></li>
+                    <li class="active"><a href="index.html">Home</a></li>
+                    <li><a href="admin.html">Admin</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
@@ -54,10 +54,7 @@
         <!-- Main Container -->
         <div class="container theme-showcase" role="main">
             <div class="container">
-                <h2>Books List</h2>
-                <div>
-                    <a class="btn btn-lg btn-success" role="button" href="#">Add Book</a>
-                </div>
+                <h2>Results</h2>
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -68,8 +65,6 @@
                             <th>Checked In/Out</th>
                             <th>Checked Out By</th>
                             <th>Check Out Date</th>
-                            <th></th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -82,7 +77,6 @@
                                 <td>{{ .Book_check }}</td>
                                 <td>{{ .Mid }}</td>
                                 <td>{{ .Book_out_date.Value }}</td>
-                                <td><a href="#">Edit</a> | <a href="#">Delete</a></td>
                             </tr>
                         {{ end }}
                     </tbody>

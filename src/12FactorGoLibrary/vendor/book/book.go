@@ -13,6 +13,7 @@ import (
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
+	"fmt"
 )
 
 //Gets connection string as specified in env vars
@@ -112,6 +113,40 @@ func GetCheckedOutBook() []Book {
 	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE book_check = 2")
 	//Check for Errors in DB Query
 	checkErr(err)
+	//For Every Book Row that's not null/nil place
+	for bookRows.Next() {
+		b := Book{} //book type
+		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
+		checkErr(err)
+		if b.Book_out_date.Valid{
+			books = append(books, b)
+		} else {
+			b.Book_out_date.String = ""
+			books = append(books, b)
+		}
+
+	}
+
+	return books
+}
+
+func GetSearchedBook(s string) []Book {
+	
+	var books []Book //Hold Slice of Book Type
+	var search string //Holds string
+	search = fmt.Sprintf("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE book_title like '%%s%'", s) //Concats %s on searched string ends
+
+	//DB Connection
+	db, err := sql.Open("mysql", connectionString)
+	checkErr(err)
+	defer db.Close() //Close after func GetBook ends
+
+	//Prepare entire rows of data within a query
+	bookRows, err := db.Query(search)
+	
+	//Check for Errors in DB the Query
+	checkErr(err)
+
 	//For Every Book Row that's not null/nil place
 	for bookRows.Next() {
 		b := Book{} //book type
