@@ -22,4 +22,4 @@ run:
     cd go-library-source/src/12FactorGoLibrary/ci
     java -version
     ls -a
-    java -jar GoLibraryFunctionalTests
+    java -jar GoLibraryFunctionalTests.jar
