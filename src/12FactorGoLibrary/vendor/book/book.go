@@ -2,17 +2,17 @@ package book
 
 // Author: Jonathan Quilliams
 //Created: 7/25/17
-// Edited: 8/1/17
+// Edited: 8/3/17
 //Purpose: - Query book information/SQL from databse
 //		   - Create a Book type
 //		   - func NewSlice() -- Creates New slice of Book [NOT USED]
-//		   - Getters of Book_id, Book_title, Book_authF, Book_authL, Library_id, Book_check, Mid, and Book_out_date [NOT USED]
 
 import (
 	"os"
 	"database/sql"
 
 	_ "github.com/go-sql-driver/mysql"
+	"fmt"
 )
 
 //Gets connection string as specified in env vars
@@ -127,6 +127,57 @@ func GetCheckedOutBook() []Book {
 	}
 
 	return books
+}
+
+// Return Books under search params
+func GetSearchedBook(s string) []Book {
+	
+	var books []Book //Hold Slice of Book Type
+	search :=  fmt.Sprintf("%s%s%s", "%", s, "%")
+
+	//DB Connection
+	db, err := sql.Open("mysql", connectionString)
+	checkErr(err)
+	defer db.Close() //Close after func GetBook ends
+
+	//Prepare entire rows of data within a query
+	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE book_title like ?", search)
+	
+	//Check for Errors in DB the Query
+	checkErr(err)
+
+	//For Every Book Row that's not null/nil place
+	for bookRows.Next() {
+		b := Book{} //book type
+		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
+		checkErr(err)
+		if b.Book_out_date.Valid{
+			books = append(books, b)
+		} else {
+			b.Book_out_date.String = ""
+			books = append(books, b)
+		}
+
+	}
+
+	return books
+}
+
+//INSERT New Row into books TABLE
+func AddBook(title string, authF string, authL string) {
+	Book_title := title
+	Book_authF := authF
+	Book_authL := authL
+
+	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+	checkErr(err)
+	defer db.Close()
+
+	//Insert new book instance into table
+	stmt, err := db.Prepare("INSERT INTO books (Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid) VALUES (?, ?, ?, 1, 1, 0)")
+	checkErr(err)
+
+	stmt.Exec(Book_title, Book_authF, Book_authL)
 }
 
 //Checks for errors

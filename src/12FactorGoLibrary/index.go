@@ -1,7 +1,7 @@
 package main
 
 //Author: C Neuhardt
-//Last Updated: 8/1/2017
+//Last Updated: 8/3/2017
 
 import (
 	"os"
@@ -17,8 +17,8 @@ import (
 	"time"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|admin.html|books.html|members.html|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/members.html", "views/test.html", "views/checkout.html", "views/checkin.html"))
+var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|members.html|add-member.html|memberCreated|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/members.html", "views/add-member.html", "views/test.html", "views/checkout.html", "views/checkin.html", "views/results.html"))
 
 type Page struct {
 	Members []member.Member
@@ -40,11 +40,11 @@ func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
 //Validates path and calls handler
 func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		/*m := validPath.FindStringSubmatch(r.URL.Path)
+		m := validPath.FindStringSubmatch(r.URL.Path)
 		if m == nil {
 			http.NotFound(w, r)
 			return
-		}*/
+		}
 		fn(w, r)
 	}
 }
@@ -79,6 +79,25 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "books", p)
 }
 
+//Handles the create book page
+func addBookHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
+	p := loadPage(members, books)
+	renderTemplate(w, "add-book", p)
+}
+
+func bookCreatedHandler(w http.ResponseWriter, r *http.Request) {
+	bookTitle := r.FormValue("title")
+	bookAuthF := r.FormValue("fName")
+	bookAuthL := r.FormValue("lName")
+
+	book.AddBook(bookTitle, bookAuthF, bookAuthL)
+
+	http.Redirect(w, r, "/books.html", http.StatusFound)
+}
+
 //Handles the members page
 func membersHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
@@ -88,6 +107,33 @@ func membersHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := loadPage(members, books)
 	renderTemplate(w, "members", p)
+}
+
+//Handles the create member page
+func addMemberHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
+	p := loadPage(members, books)
+	renderTemplate(w, "add-member", p)
+}
+
+//Handles the create member page
+func memberCreatedHandler(w http.ResponseWriter, r *http.Request) {
+	memberFName := r.FormValue("fName")
+	memberLName := r.FormValue("lName")
+	
+	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+	checkErr(err)
+	defer db.Close()
+
+	//Log transaction
+	stmt, err := db.Prepare("INSERT INTO member (member_fname, member_lname) VALUES (?, ?)")
+	checkErr(err)
+
+	stmt.Exec(memberFName, memberLName)
+
+	http.Redirect(w, r, "/members.html", http.StatusFound)
 }
 
 //Handles the test page
@@ -179,6 +225,19 @@ func checkedinHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/index.html", http.StatusFound)
 }
 
+func searchHandler(w http.ResponseWriter, r *http.Request){
+	
+	var books []book.Book
+	var members []member.Member
+	search := r.FormValue("s-bar")
+	books = book.GetSearchedBook(search)
+	members = member.GetSearchedMember(search)
+
+	p := loadPage(members, books)
+	renderTemplate(w, "results", p)
+	
+}
+
 //Checks for errors
 func checkErr(err error) {
 	if err != nil {
@@ -196,9 +255,14 @@ func main() {
 	http.HandleFunc("/", redirect)
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	http.HandleFunc("/index.html", makeHandler(indexHandler))
+	http.HandleFunc("/search", makeHandler(searchHandler))
 	http.HandleFunc("/admin.html", makeHandler(adminHandler))
 	http.HandleFunc("/books.html", makeHandler(booksHandler))
+	http.HandleFunc("/add-book.html", makeHandler(addBookHandler))
+	http.HandleFunc("/bookCreated", makeHandler(bookCreatedHandler))
 	http.HandleFunc("/members.html", makeHandler(membersHandler))
+	http.HandleFunc("/add-member.html", makeHandler(addMemberHandler))
+	http.HandleFunc("/memberCreated", makeHandler(memberCreatedHandler))
 	http.HandleFunc("/test.html", makeHandler(testHandler))
 	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler))
 	http.HandleFunc("/checkedout", makeHandler(checkedoutHandler))
