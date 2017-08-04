@@ -67,6 +67,36 @@ func GetBook() []Book {
 	return books
 }// end GetBook()
 
+func GetBookById(id string) []Book {
+	
+	var book []Book //Holds Slice of Book Type
+
+	//DB Connection
+	db, err := sql.Open("mysql", connectionString)
+	checkErr(err)
+	defer db.Close() //Close after func GetBook ends
+
+	//Grab entire rows of data within a query
+	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE Book_Id = ?", id)
+	//Check for Errors in DB Query
+	checkErr(err)
+	//For Every Book Row that's not null/nil place
+	for bookRows.Next() {
+		b := Book{} //book type
+		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
+		checkErr(err)
+		if b.Book_out_date.Valid{
+			book = append(book, b)
+		} else {
+			b.Book_out_date.String = ""
+			book = append(book, b)
+		}
+
+	}
+
+	return book
+}// end GetBook()
+
 //Returns Book Slice of multiple books that are not checked out
 func GetCheckedInBook() []Book {
 	
@@ -179,6 +209,24 @@ func AddBook(title string, authF string, authL string) {
 
 	stmt.Exec(Book_title, Book_authF, Book_authL)
 }
+
+//UPDATE Row in books TABLE
+/*func EditBook(bookId string, title string, authF string, authL string) {
+	Book_id := bookId
+	Book_title := title
+	Book_authF := authF
+	Book_authL := authL
+
+	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+	checkErr(err)
+	defer db.Close()
+
+	//Insert new book instance into table
+	stmt, err := db.Prepare("UPDATE books SET Book_Title = ? Book_AuthFName = ? Book_AuthLName = ? WHERE Book_Id = ?")
+	checkErr(err)
+
+	stmt.Exec(Book_title, Book_authF, Book_authL, Book_id)
+}*/
 
 //Checks for errors
 func checkErr(err error) {

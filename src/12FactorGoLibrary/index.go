@@ -5,7 +5,7 @@ package main
 
 import (
 	"os"
-	//"fmt"
+	"fmt"
 	"database/sql"
 	"html/template"
 	"net/http"
@@ -17,8 +17,8 @@ import (
 	"time"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|members.html|add-member.html|memberCreated|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/members.html", "views/add-member.html", "views/test.html", "views/checkout.html", "views/checkin.html", "views/results.html"))
+var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|edit-book/[0-9]+|members.html|add-member.html|memberCreated|edit-member/[0-9]+|memberEdited|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/edit-book.html", "views/members.html", "views/add-member.html", "views/edit-member.html", "views/test.html", "views/checkout.html", "views/checkin.html", "views/results.html"))
 
 type Page struct {
 	Members []member.Member
@@ -98,6 +98,23 @@ func bookCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/books.html", http.StatusFound)
 }
 
+//Handles the edit book page
+func editBookHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+
+	id := r.URL.Path[11:]
+
+	books = book.GetBookById(id)
+	
+	if(len(books) < 1) {
+		http.Redirect(w, r, "/books.html", http.StatusFound)
+	} else {
+		p := loadPage(members, books)
+		renderTemplate(w, "edit-book", p)
+	}
+}
+
 //Handles the members page
 func membersHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
@@ -132,6 +149,42 @@ func memberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	checkErr(err)
 
 	stmt.Exec(memberFName, memberLName)
+
+	http.Redirect(w, r, "/members.html", http.StatusFound)
+}
+
+//Handles the edit member page
+func editMemberHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+
+	id := r.URL.Path[13:]
+
+	members = member.GetMemberById(id)
+	
+	if(len(members) < 1) {
+		http.Redirect(w, r, "/members.html", http.StatusFound)
+	} else {
+		p := loadPage(members, books)
+		renderTemplate(w, "edit-member", p)
+	}
+}
+
+//Handles the create member page
+func memberEditedHandler(w http.ResponseWriter, r *http.Request) {
+	memberId := r.FormValue("memId")
+	memberFName := r.FormValue("fName")
+	memberLName := r.FormValue("lName")
+	
+	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+	checkErr(err)
+	defer db.Close()
+
+	//Log transaction
+	stmt, err := db.Prepare("UPDATE member SET member_fname = ?, member_lname = ? WHERE member_id = ?")
+	checkErr(err)
+
+	stmt.Exec(memberFName, memberLName, memberId)
 
 	http.Redirect(w, r, "/members.html", http.StatusFound)
 }
@@ -260,9 +313,12 @@ func main() {
 	http.HandleFunc("/books.html", makeHandler(booksHandler))
 	http.HandleFunc("/add-book.html", makeHandler(addBookHandler))
 	http.HandleFunc("/bookCreated", makeHandler(bookCreatedHandler))
+	http.HandleFunc("/edit-book/", makeHandler(editBookHandler))
 	http.HandleFunc("/members.html", makeHandler(membersHandler))
 	http.HandleFunc("/add-member.html", makeHandler(addMemberHandler))
 	http.HandleFunc("/memberCreated", makeHandler(memberCreatedHandler))
+	http.HandleFunc("/edit-member/", makeHandler(editMemberHandler))
+	http.HandleFunc("/memberEdited", makeHandler(memberEditedHandler))
 	http.HandleFunc("/test.html", makeHandler(testHandler))
 	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler))
 	http.HandleFunc("/checkedout", makeHandler(checkedoutHandler))
