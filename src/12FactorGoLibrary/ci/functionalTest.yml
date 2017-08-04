@@ -21,4 +21,4 @@ run:
     cd go-library-source/src/12FactorGoLibrary/ci
     java -version
     ls
-    java -jar checkInGoTest.jar -httpPort=8080
+    java -jar checkInGoTest.jar
