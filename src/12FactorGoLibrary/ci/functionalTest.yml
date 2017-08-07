@@ -24,6 +24,7 @@ run:
     ls
     cd /opt/selenium
     java -jar selenium-server-standalone.jar &
+    exit
     cd go-library-source/src/12FactorGoLibrary/ci
     ls
     java -jar checkInGoTest.jar
