@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!-- >
+     Created By: Chris Neuhardt
+     Created On: 8/7/17
+     File Name: delete-member.html
+
+   Dependencies: bootstrap 3.3.7, jquery 3.2.1, mysql, javascript
+<! -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>Library Services</title>
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="../resources/css/bootstrap.min.css" ></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="../resources/js/bootstrap.min.js"></script>
+
+        <!-- Custom Style -->
+        <link rel="stylesheet" href="../resources/theme.css" ></link>
+    </head>
+
+    <body>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">Library App</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="../index.html">Home</a></li>
+                    <li class="active"><a href="../admin.html">Admin</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+        </nav>
+        <!-- Main Container -->
+        <div class="container theme-showcase" role="main">
+            <div class="container">
+                <h2>Confirm Delete</h2>
+                <form class="form-horizontal" action="../memberDeleted" method="POST">
+                    {{ range .Members }}
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="fName">First Name</label>
+                            <input disabled="" type="text" name="fName" id="fname" value="{{ .Member_fname }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="lName">Last Name</label>
+                            <input disabled="" type="text" name="lName" id="lname" value="{{ .Member_lname }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <input type="hidden" name="memId" id="memId" value="{{ .Member_id }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <button type="submit" class="btn btn-default">Delete</button>
+                            <a href="../members.html">Cancel</a>
+                        </div>
+                    </div>
+                    {{ end }}
+                </form>
+            </div>
+            <hr></hr>
+            <footer class="footer">
+                <p>&copy; 2017 Library Services</p>
+            </footer>
+        </div>
+    </body>
+</html>
