@@ -22,4 +22,4 @@ run:
     chmod +x /opt/selenium
     java -version
     ls
-    java -jar GoLibTests.jar
+    java -jar checkInGoTest.jar
