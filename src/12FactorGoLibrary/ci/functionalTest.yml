@@ -19,12 +19,6 @@ run:
   - -exc
   - |
     cd go-library-source/src/12FactorGoLibrary/ci
-    chmod +x /opt/selenium
     java -version
-    ls
-    cd /opt/selenium
-    java -jar selenium-server-standalone.jar &
-    exit
-    cd go-library-source/src/12FactorGoLibrary/ci
     ls
     java -jar checkInGoTest.jar
