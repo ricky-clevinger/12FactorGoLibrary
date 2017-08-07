@@ -22,5 +22,8 @@ run:
     chmod +x /opt/selenium
     java -version
     ls
+    cd /opt/selenium
     java -jar selenium-server-standalone.jar &
+    cd ../../ci
+    ls
     java -jar checkInGoTest.jar
