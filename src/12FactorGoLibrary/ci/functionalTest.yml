@@ -19,6 +19,7 @@ run:
   - -exc
   - |
     cd go-library-source/src/12FactorGoLibrary/ci
+    chmod +x /opt/selenium
     java -version
     ls
     java -jar checkInGoTest.jar
