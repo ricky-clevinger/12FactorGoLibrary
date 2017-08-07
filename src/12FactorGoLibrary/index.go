@@ -18,7 +18,7 @@ import (
 )
 
 var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|edit-book/[0-9]+|bookEdited|delete-book/[0-9]+|bookDeleted|members.html|add-member.html|memberCreated|edit-member/[0-9]+|memberEdited|delete-member/[0-9]+|memberDeleted|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/edit-book.html", "views/delete-book.html", "views/members.html", "views/add-member.html", "views/edit-member.html", "views/delete-member.html", "views/test.html", "views/checkout.html", "views/checkedout.html", "views/checkin.html", "views/checkedin.html", "views/results.html"))
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/bookCreated.html", "views/edit-book.html", "views/bookEdited.html", "views/delete-book.html", "views/members.html", "views/add-member.html", "views/memberCreated.html", "views/edit-member.html", "views/memberEdited.html", "views/delete-member.html", "views/test.html", "views/checkout.html", "views/checkedout.html", "views/checkin.html", "views/checkedin.html", "views/results.html"))
 
 type Page struct {
 	Members []member.Member
@@ -89,13 +89,17 @@ func addBookHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func bookCreatedHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+
 	bookTitle := r.FormValue("title")
 	bookAuthF := r.FormValue("fName")
 	bookAuthL := r.FormValue("lName")
 
 	book.AddBook(bookTitle, bookAuthF, bookAuthL)
 
-	http.Redirect(w, r, "/books.html", http.StatusFound)
+	p := loadPage(members, books)
+	renderTemplate(w, "bookCreated", p)
 }
 
 //Handles the edit book page
@@ -117,6 +121,9 @@ func editBookHandler(w http.ResponseWriter, r *http.Request) {
 
 //Handles the edited book page
 func bookEditedHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
 	bookId := r.FormValue("bookId")
 	bookTitle := r.FormValue("title")
 	bookAuthF := r.FormValue("fName")
@@ -131,7 +138,8 @@ func bookEditedHandler(w http.ResponseWriter, r *http.Request) {
 
 	stmt.Exec(bookTitle, bookAuthF, bookAuthL, bookId)
 
-	http.Redirect(w, r, "/books.html", http.StatusFound)
+	p := loadPage(members, books)
+	renderTemplate(w, "bookEdited", p)
 }
 
 //Handles the delete book page
@@ -189,6 +197,9 @@ func addMemberHandler(w http.ResponseWriter, r *http.Request) {
 
 //Handles the create member page
 func memberCreatedHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+
 	memberFName := r.FormValue("fName")
 	memberLName := r.FormValue("lName")
 	
@@ -201,7 +212,8 @@ func memberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 
 	stmt.Exec(memberFName, memberLName)
 
-	http.Redirect(w, r, "/members.html", http.StatusFound)
+	p := loadPage(members, books)
+	renderTemplate(w, "memberCreated", p)
 }
 
 //Handles the edit member page
@@ -223,6 +235,9 @@ func editMemberHandler(w http.ResponseWriter, r *http.Request) {
 
 //Handles the edited member page
 func memberEditedHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+	
 	memberId := r.FormValue("memId")
 	memberFName := r.FormValue("fName")
 	memberLName := r.FormValue("lName")
@@ -237,7 +252,8 @@ func memberEditedHandler(w http.ResponseWriter, r *http.Request) {
 
 	stmt.Exec(memberFName, memberLName, memberId)
 
-	http.Redirect(w, r, "/members.html", http.StatusFound)
+	p := loadPage(members, books)
+	renderTemplate(w, "memberEdited", p)
 }
 
 //Handles the delete member page
