@@ -82,7 +82,7 @@
                                 <td>{{ .Book_check }}</td>
                                 <td>{{ .Mid }}</td>
                                 <td>{{ .Book_out_date.Value }}</td>
-                                <td><a href="/edit-book/{{ .Book_id }}">Edit</a> | <a href="#">Delete</a></td>
+                                <td><a href="/edit-book/{{ .Book_id }}">Edit</a> | <a href="/delete-book/{{ .Book_id }}">Delete</a></td>
                             </tr>
                         {{ end }}
                     </tbody>
