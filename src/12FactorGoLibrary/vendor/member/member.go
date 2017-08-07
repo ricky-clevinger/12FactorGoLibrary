@@ -42,6 +42,29 @@ func GetMembers() []Member {
 	return members
 }
 
+//Get Member by ID
+func GetMemberById(id string) []Member {
+	
+	var member []Member
+
+	db, err := sql.Open("mysql", connectionString)
+	checkErr(err)
+	defer db.Close()
+
+	memberRows, err := db.Query("SELECT member_id, member_fname, member_lname FROM member WHERE member_id = ?", id)
+	checkErr(err)
+	
+	for memberRows.Next() {
+		m := Member{}
+		err = memberRows.Scan(&m.Member_id, &m.Member_fname, &m.Member_lname)
+		checkErr(err)
+		member = append(member, m)
+	}
+
+	return member
+}
+
+//Get Members using search
 func GetSearchedMember(s string) []Member {
 	
 	var members []Member //Hold Slice of Member Type

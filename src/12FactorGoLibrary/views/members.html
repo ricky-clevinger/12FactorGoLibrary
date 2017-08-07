@@ -73,7 +73,7 @@
                                 <td>{{ .Member_id }}</td>
                                 <td>{{ .Member_fname }}</td>
                                 <td>{{ .Member_lname }}</td>
-                                <td><a href="#">Edit</a> | <a href="#">Delete</a></td>
+                                <td><a href="edit-member/{{ .Member_id }}">Edit</a> | <a href="delete-member/{{ .Member_id }}">Delete</a></td>
                             </tr>
                         {{ end }}
                     </tbody>

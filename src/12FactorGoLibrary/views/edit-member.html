@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <!-- >
      Created By: Jonathan Quilliams
-     Created On: 8/1/17
-     Updated By: Jonathan Quilliams
-    Last Update: 8/3/17
-      File Name: books.html
+     Created On: 8/3/17
+     Updated By: Chris Neuhardt
+     Last Update: 8/3/17
+     File Name: add-member.html
 
    Dependencies: bootstrap 3.3.7, jquery 3.2.1, mysql, javascript
 <! -->
@@ -23,9 +23,6 @@
 
         <!-- Custom Style -->
         <link rel="stylesheet" href="../resources/theme.css" ></link>
-
-        
-        
     </head>
 
     <body>
@@ -39,54 +36,46 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Library App</a>
+                <a class="navbar-brand" href="../index.html">Library App</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="index.html">Home</a></li>
-                    <li class="active" ><a href="admin.html">Admin</a></li>
+                    <li><a href="../index.html">Home</a></li>
+                    <li class="active"><a href="../admin.html">Admin</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
         </nav>
-
-
         <!-- Main Container -->
         <div class="container theme-showcase" role="main">
             <div class="container">
-                <h2>Books List</h2>
-                <div>
-                    <a class="btn btn-md btn-success" role="button" href="add-book.html">Add Book</a>
-                </div>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID #</th>
-                            <th>Book Title</th>
-                            <th>Author</th>
-                            <th>Library ID</th>
-                            <th>Checked In/Out</th>
-                            <th>Checked Out By</th>
-                            <th>Check Out Date</th>
-                            <th></th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{ range .Books }}
-                            <tr>
-                                <td>{{ .Book_id }}</td>
-                                <td>{{ .Book_title }}</td>
-                                <td>{{ .Book_authF }} {{ .Book_authL }}</td>
-                                <td>{{ .Library_id }}</td>
-                                <td>{{ .Book_check }}</td>
-                                <td>{{ .Mid }}</td>
-                                <td>{{ .Book_out_date.Value }}</td>
-                                <td><a href="/edit-book/{{ .Book_id }}">Edit</a> | <a href="/delete-book/{{ .Book_id }}">Delete</a></td>
-                            </tr>
-                        {{ end }}
-                    </tbody>
-                </table>
+                <h2>Enter Member Information</h2>
+                <form class="form-horizontal" action="../memberEdited" method="POST">
+                    {{ range .Members }}
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="fName">First Name</label>
+                            <input type="text" name="fName" id="fname" value="{{ .Member_fname }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="lName">Last Name</label>
+                            <input type="text" name="lName" id="lname" value="{{ .Member_lname }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <input type="hidden" name="memId" id="memId" value="{{ .Member_id }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-3">
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </div>
+                    {{ end }}
+                </form>
             </div>
             <hr></hr>
             <footer class="footer">
