@@ -5,13 +5,13 @@ package main
 
 import (
 	"os"
-	//"fmt"
+	"fmt"
 	"database/sql"
 	"html/template"
 	"net/http"
 	"regexp"
 	"book"
-
+	"log"
 	_ "github.com/go-sql-driver/mysql"
 	"member"
 	"time"
@@ -26,6 +26,12 @@ type Page struct {
 }
 
 func loadPage(members []member.Member, books []book.Book) *Page {
+	if(len(members) > 0) {
+		fmt.Println("Loaded member #: ", len(members))
+	}
+	if(len(books) > 0) {
+		fmt.Println("Loaded book #: ", len(books))
+	}
 	return &Page{Members:members, Books:books}
 }
 
@@ -96,10 +102,15 @@ func bookCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	bookAuthF := r.FormValue("fName")
 	bookAuthL := r.FormValue("lName")
 
-	book.AddBook(bookTitle, bookAuthF, bookAuthL)
+	if len(bookTitle)==0 || len(bookAuthF)==0 || len(bookAuthL)==0 {
+		os.Stderr.WriteString("Empty fields inputted in add-book.html.")
+		http.Redirect(w, r, "/add-book.html", http.StatusFound)
+	} else {
+		book.AddBook(bookTitle, bookAuthF, bookAuthL)
 
-	p := loadPage(members, books)
-	renderTemplate(w, "bookCreated", p)
+		p := loadPage(members, books)
+		renderTemplate(w, "bookCreated", p)
+	}
 }
 
 //Handles the edit book page
@@ -128,18 +139,23 @@ func bookEditedHandler(w http.ResponseWriter, r *http.Request) {
 	bookTitle := r.FormValue("title")
 	bookAuthF := r.FormValue("fName")
 	bookAuthL := r.FormValue("lName")
-	
-	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
-	checkErr(err)
-	defer db.Close()
 
-	stmt, err := db.Prepare("UPDATE books SET book_title = ?, book_authfname = ?, book_authlname = ? WHERE book_id = ?")
-	checkErr(err)
+	if len(bookId)==0 || len(bookTitle)==0 || len(bookAuthF)==0 || len(bookAuthL)==0 {
+		os.Stderr.WriteString("Empty fields inputted in edit-book.html.")
+		http.Redirect(w, r, "/edit-book.html", http.StatusFound)
+	} else {
+		db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+		checkErr(err)
+		defer db.Close()
 
-	stmt.Exec(bookTitle, bookAuthF, bookAuthL, bookId)
+		stmt, err := db.Prepare("UPDATE books SET book_title = ?, book_authfname = ?, book_authlname = ? WHERE book_id = ?")
+		checkErr(err)
 
-	p := loadPage(members, books)
-	renderTemplate(w, "bookEdited", p)
+		stmt.Exec(bookTitle, bookAuthF, bookAuthL, bookId)
+
+		p := loadPage(members, books)
+		renderTemplate(w, "bookEdited", p)
+	}
 }
 
 //Handles the delete book page
@@ -203,17 +219,22 @@ func memberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	memberFName := r.FormValue("fName")
 	memberLName := r.FormValue("lName")
 	
-	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
-	checkErr(err)
-	defer db.Close()
+	if len(memberFName)==0 || len(memberLName)==0 {
+		os.Stderr.WriteString("Empty fields inputted in add-member.html.")
+		http.Redirect(w, r, "/add-member.html", http.StatusFound)
+	} else {
+		db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+		checkErr(err)
+		defer db.Close()
 
-	stmt, err := db.Prepare("INSERT INTO member (member_fname, member_lname) VALUES (?, ?)")
-	checkErr(err)
+		stmt, err := db.Prepare("INSERT INTO member (member_fname, member_lname) VALUES (?, ?)")
+		checkErr(err)
 
-	stmt.Exec(memberFName, memberLName)
+		stmt.Exec(memberFName, memberLName)
 
-	p := loadPage(members, books)
-	renderTemplate(w, "memberCreated", p)
+		p := loadPage(members, books)
+		renderTemplate(w, "memberCreated", p)
+	}
 }
 
 //Handles the edit member page
@@ -242,18 +263,23 @@ func memberEditedHandler(w http.ResponseWriter, r *http.Request) {
 	memberFName := r.FormValue("fName")
 	memberLName := r.FormValue("lName")
 	
-	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
-	checkErr(err)
-	defer db.Close()
+	if len(memberId)==0 || len(memberFName)==0 || len(memberLName)==0 {
+		os.Stderr.WriteString("Empty fields inputted in edit-member.html.")
+		http.Redirect(w, r, "/edit-member.html", http.StatusFound)
+	} else {
+		db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
+		checkErr(err)
+		defer db.Close()
 
-	//Log transaction
-	stmt, err := db.Prepare("UPDATE member SET member_fname = ?, member_lname = ? WHERE member_id = ?")
-	checkErr(err)
+		//Log transaction
+		stmt, err := db.Prepare("UPDATE member SET member_fname = ?, member_lname = ? WHERE member_id = ?")
+		checkErr(err)
 
-	stmt.Exec(memberFName, memberLName, memberId)
+		stmt.Exec(memberFName, memberLName, memberId)
 
-	p := loadPage(members, books)
-	renderTemplate(w, "memberEdited", p)
+		p := loadPage(members, books)
+		renderTemplate(w, "memberEdited", p)
+	}
 }
 
 //Handles the delete member page
@@ -403,7 +429,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request){
 //Checks for errors
 func checkErr(err error) {
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 }
 
