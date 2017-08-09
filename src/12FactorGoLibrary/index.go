@@ -7,6 +7,7 @@ import (
 	"os"
 	"fmt"
 	"database/sql"
+	"html"
 	"html/template"
 	"net/http"
 	"regexp"
@@ -98,9 +99,9 @@ func bookCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	bookTitle := r.FormValue("title")
-	bookAuthF := r.FormValue("fName")
-	bookAuthL := r.FormValue("lName")
+	bookTitle := html.EscapeString(r.FormValue("title"))
+	bookAuthF := html.EscapeString(r.FormValue("fName"))
+	bookAuthL := html.EscapeString(r.FormValue("lName"))
 
 	if len(bookTitle)==0 || len(bookAuthF)==0 || len(bookAuthL)==0 {
 		os.Stderr.WriteString("Empty fields inputted in add-book.html.")
@@ -135,10 +136,10 @@ func bookEditedHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 	
-	bookId := r.FormValue("bookId")
-	bookTitle := r.FormValue("title")
-	bookAuthF := r.FormValue("fName")
-	bookAuthL := r.FormValue("lName")
+	bookId := html.EscapeString(r.FormValue("bookId"))
+	bookTitle := html.EscapeString(r.FormValue("title"))
+	bookAuthF := html.EscapeString(r.FormValue("fName"))
+	bookAuthL := html.EscapeString(r.FormValue("lName"))
 
 	if len(bookId)==0 || len(bookTitle)==0 || len(bookAuthF)==0 || len(bookAuthL)==0 {
 		os.Stderr.WriteString("Empty fields inputted in edit-book.html.")
@@ -176,7 +177,7 @@ func deleteBookHandler(w http.ResponseWriter, r *http.Request) {
 }
 //Handles the deleted book page
 func bookDeletedHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.FormValue("bookId")
+	id := html.EscapeString(r.FormValue("bookId"))
 	
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 	checkErr(err)
@@ -216,8 +217,8 @@ func memberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	memberFName := r.FormValue("fName")
-	memberLName := r.FormValue("lName")
+	memberFName := html.EscapeString(r.FormValue("fName"))
+	memberLName := html.EscapeString(r.FormValue("lName"))
 	
 	if len(memberFName)==0 || len(memberLName)==0 {
 		os.Stderr.WriteString("Empty fields inputted in add-member.html.")
@@ -259,9 +260,9 @@ func memberEditedHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 	
-	memberId := r.FormValue("memId")
-	memberFName := r.FormValue("fName")
-	memberLName := r.FormValue("lName")
+	memberId := html.EscapeString(r.FormValue("memId"))
+	memberFName := html.EscapeString(r.FormValue("fName"))
+	memberLName := html.EscapeString(r.FormValue("lName"))
 	
 	if len(memberId)==0 || len(memberFName)==0 || len(memberLName)==0 {
 		os.Stderr.WriteString("Empty fields inputted in edit-member.html.")
@@ -301,7 +302,7 @@ func deleteMemberHandler(w http.ResponseWriter, r *http.Request) {
 
 //Hanldes the deleted member page
 func memberDeletedHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.FormValue("memId")
+	id := html.EscapeString(r.FormValue("memId"))
 	
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 	checkErr(err)
@@ -347,8 +348,8 @@ func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
 	
 	current_time := time.Now().Local()
 	
-	memberId := r.FormValue("selPerson")
-	bookId := r.FormValue("selBook")
+	memberId := html.EscapeString(r.FormValue("selPerson"))
+	bookId := html.EscapeString(r.FormValue("selBook"))
 	date := current_time.Format("2006-01-02 15:04:05")
 	
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
@@ -390,7 +391,7 @@ func checkedinHandler(w http.ResponseWriter, r *http.Request) {
 	
 	current_time := time.Now().Local()
 	
-	bookId := r.FormValue("selBook")
+	bookId := html.EscapeString(r.FormValue("selBook"))
 	date := current_time.Format("2006-01-02 15:04:05")
 
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
@@ -417,13 +418,18 @@ func searchHandler(w http.ResponseWriter, r *http.Request){
 	
 	var books []book.Book
 	var members []member.Member
-	search := r.FormValue("s-bar")
-	books = book.GetSearchedBook(search)
-	members = member.GetSearchedMember(search)
+	search := html.EscapeString(r.FormValue("s-bar"))
 
-	p := loadPage(members, books)
-	renderTemplate(w, "results", p)
-	
+	if(len(search) < 1) {
+		os.Stderr.WriteString("Empty fields inputted in home page search.")
+		http.Redirect(w, r, "/index.html", http.StatusFound)
+	} else {
+		books = book.GetSearchedBook(search)
+		members = member.GetSearchedMember(search)
+
+		p := loadPage(members, books)
+		renderTemplate(w, "results", p)
+	}
 }
 
 //Checks for errors
