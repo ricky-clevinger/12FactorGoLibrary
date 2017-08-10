@@ -76,7 +76,7 @@
                                 <td>{{ .Book_authF }} {{ .Book_authL }}</td>
                                 <td>{{ .Library_id }}</td>
                                 <td>{{ .Book_check }}</td>
-                                <td>{{ .Mid }}</td>
+                                <td>{{ .Member_fname.Value }} {{ .Member_lname.Value }}</td>
                                 <td>{{ .Book_out_date.Value }}</td>
                             </tr>
                         {{ end }}

@@ -80,7 +80,7 @@
                                 <td>{{ .Book_authF }} {{ .Book_authL }}</td>
                                 <td>{{ .Library_id }}</td>
                                 <td>{{ .Book_check }}</td>
-                                <td>{{ .Mid }}</td>
+                                <td>{{ .Member_fname.Value }} {{ .Member_lname.Value }}</td>
                                 <td>{{ .Book_out_date.Value }}</td>
                                 <td><a href="/edit-book/{{ .Book_id }}">Edit</a> | <a href="/delete-book/{{ .Book_id }}">Delete</a></td>
                             </tr>

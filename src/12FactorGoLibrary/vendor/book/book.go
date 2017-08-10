@@ -25,9 +25,11 @@ type Book struct{
 	Book_authF string
 	Book_authL string
 	Library_id int
-	Book_check int
+	Book_check string
 	Mid int
 	Book_out_date sql.NullString //Data pulled from db is either a date-string or null.
+	Member_fname sql.NullString
+	Member_lname sql.NullString
 }
 
 //Create new Book Slice Type
@@ -47,13 +49,13 @@ func GetBook() []Book {
 	defer db.Close() //Close after func GetBook ends
 
 	//Grab entire rows of data within a query
-	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books")
+	bookRows, err := db.Query("SELECT b.Book_Id, b.Book_Title, b.Book_AuthFName, b.Book_AuthLName, b.Library_Id, CASE WHEN b.Book_check = 1 THEN 'In' ELSE 'Out' END AS B_check, b.Mid, date_format(b.Book_Out_Date, '%Y-%m-%d'), m.Member_fname, m.Member_lname FROM books b LEFT JOIN member m ON b.Mid = m.Member_id")
 	//Check for Errors in DB Query
 	checkErr(err)
 	//For Every Book Row that's not null/nil place
 	for bookRows.Next() {
 		b := Book{} //book type
-		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
+		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date, &b.Member_fname, &b.Member_lname)
 		checkErr(err)
 		if b.Book_out_date.Valid{
 			books = append(books, b)
@@ -77,13 +79,13 @@ func GetBookById(id string) []Book {
 	defer db.Close() //Close after func GetBook ends
 
 	//Grab entire rows of data within a query
-	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE Book_Id = ?", id)
+	bookRows, err := db.Query("SELECT b.Book_Id, b.Book_Title, b.Book_AuthFName, b.Book_AuthLName, b.Library_Id, CASE WHEN b.Book_check = 1 THEN 'In' ELSE 'Out' END AS B_check, b.Mid, date_format(b.Book_Out_Date, '%Y-%m-%d'), m.Member_fname, m.Member_lname FROM books b LEFT JOIN member m ON b.Mid = m.Member_id WHERE Book_Id = ?", id)
 	//Check for Errors in DB Query
 	checkErr(err)
 	//For Every Book Row that's not null/nil place
 	for bookRows.Next() {
 		b := Book{} //book type
-		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
+		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date, &b.Member_fname, &b.Member_lname)
 		checkErr(err)
 		if b.Book_out_date.Valid{
 			book = append(book, b)
@@ -108,13 +110,13 @@ func GetCheckedInBook() []Book {
 	defer db.Close() //Close after func GetBook ends
 
 	//Grab entire rows of data within a query
-	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE book_check = 1")
+	bookRows, err := db.Query("SELECT b.Book_Id, b.Book_Title, b.Book_AuthFName, b.Book_AuthLName, b.Library_Id, CASE WHEN b.Book_check = 1 THEN 'In' ELSE 'Out' END AS B_check, b.Mid, date_format(b.Book_Out_Date, '%Y-%m-%d'), m.Member_fname, m.Member_lname FROM books b LEFT JOIN member m ON b.Mid = m.Member_id WHERE book_check = 1")
 	//Check for Errors in DB Query
 	checkErr(err)
 	//For Every Book Row that's not null/nil place
 	for bookRows.Next() {
 		b := Book{} //book type
-		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
+		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date, &b.Member_fname, &b.Member_lname)
 		checkErr(err)
 		if b.Book_out_date.Valid{
 			books = append(books, b)
@@ -139,13 +141,13 @@ func GetCheckedOutBook() []Book {
 	defer db.Close() //Close after func GetBook ends
 
 	//Grab entire rows of data within a query
-	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE book_check = 2")
+	bookRows, err := db.Query("SELECT b.Book_Id, b.Book_Title, b.Book_AuthFName, b.Book_AuthLName, b.Library_Id, CASE WHEN b.Book_check = 1 THEN 'In' ELSE 'Out' END AS B_check, b.Mid, date_format(b.Book_Out_Date, '%Y-%m-%d'), m.Member_fname, m.Member_lname FROM books b LEFT JOIN member m ON b.Mid = m.Member_id WHERE book_check = 2")
 	//Check for Errors in DB Query
 	checkErr(err)
 	//For Every Book Row that's not null/nil place
 	for bookRows.Next() {
 		b := Book{} //book type
-		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
+		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date, &b.Member_fname, &b.Member_lname)
 		checkErr(err)
 		if b.Book_out_date.Valid{
 			books = append(books, b)
@@ -171,7 +173,7 @@ func GetSearchedBook(s string) []Book {
 	defer db.Close() //Close after func GetBook ends
 
 	//Prepare entire rows of data within a query
-	bookRows, err := db.Query("SELECT Book_Id, Book_Title, Book_AuthFName, Book_AuthLName, Library_Id, Book_Check, Mid, date_format(Book_Out_Date, '%Y-%m-%d') FROM books WHERE book_title like ?", search)
+	bookRows, err := db.Query("SELECT b.Book_Id, b.Book_Title, b.Book_AuthFName, b.Book_AuthLName, b.Library_Id, CASE WHEN b.Book_check = 1 THEN 'In' ELSE 'Out' END AS B_check, b.Mid, date_format(b.Book_Out_Date, '%Y-%m-%d'), m.Member_fname, m.Member_lname FROM books b LEFT JOIN member m ON b.Mid = m.Member_id WHERE book_title like ?", search)
 	
 	//Check for Errors in DB the Query
 	checkErr(err)
@@ -179,7 +181,7 @@ func GetSearchedBook(s string) []Book {
 	//For Every Book Row that's not null/nil place
 	for bookRows.Next() {
 		b := Book{} //book type
-		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date)
+		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date, &b.Member_fname, &b.Member_lname)
 		checkErr(err)
 		if b.Book_out_date.Valid{
 			books = append(books, b)
