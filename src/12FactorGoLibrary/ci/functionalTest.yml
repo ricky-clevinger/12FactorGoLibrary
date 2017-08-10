@@ -21,5 +21,4 @@ run:
     cd go-library-source/src/12FactorGoLibrary/ci
     java -version
     ls
-    sudo iptables -P FORWARD ACCEPT
     java -jar checkInGoTest.jar 
