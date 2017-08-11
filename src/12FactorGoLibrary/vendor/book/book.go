@@ -10,7 +10,9 @@ package book
 import (
 	"os"
 	"database/sql"
-
+	"encoding/json"
+	"strconv"
+	"net/http"
 	_ "github.com/go-sql-driver/mysql"
 	"fmt"
 )
@@ -18,18 +20,21 @@ import (
 //Gets connection string as specified in env vars
 var connectionString = os.Getenv("LIBRARY")
 
+//Connects to RESTful API
+var url = "http://localhost:8081/books"
+
 //Book Type
 type Book struct{
-	Book_id int
-	Book_title string
-	Book_authF string
-	Book_authL string
-	Library_id int
-	Book_check string
-	Mid int
-	Book_out_date sql.NullString //Data pulled from db is either a date-string or null.
-	Member_fname sql.NullString
-	Member_lname sql.NullString
+	Book_id int `json:"Book_id"`
+	Book_title string `json:"Book_title"`
+	Book_authF string `json:"Book_authF"`
+	Book_authL string `json:"Book_authL"`
+	Library_id int `json:"Library_id"`
+	Book_check string `json:"Book_check"`
+	Mid int `json:"Mid"`
+	Book_out_date sql.NullString `json:"Book_out_date"`
+	Member_fname sql.NullString `json:"Member_fname"`
+	Member_lname sql.NullString `json:"Member_lname"`
 }
 
 //Create new Book Slice Type
@@ -37,9 +42,27 @@ type Book struct{
 //e.g. BookVar := book.NewSlice()
 func NewSlice() *[]Book {return new([]Book)}
 
+//Get Books
+func GetBook() []Book {
+	var books []Book
+
+	request, err := http.NewRequest("GET", url, nil)
+	checkErr(err)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	checkErr(err)
+	defer response.Body.Close()
+
+	err = json.NewDecoder(response.Body).Decode(&books)
+	checkErr(err)
+
+	return books
+}
 //Get Book
 //Returns Book Slice of multiple books
-func GetBook() []Book {
+/*func GetBook() []Book {
 	
 	var books []Book //Holds Slice of Book Type
 
@@ -67,9 +90,39 @@ func GetBook() []Book {
 	}
 
 	return books
-}// end GetBook()
+}// end GetBook()*/
 
+//Get Member by ID
 func GetBookById(id string) []Book {
+	var book []Book
+	var books []Book
+	intId, err := strconv.Atoi(id)
+	checkErr(err)
+
+	request, err := http.NewRequest("GET", url, nil)
+	checkErr(err)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	checkErr(err)
+	defer response.Body.Close()
+
+	err = json.NewDecoder(response.Body).Decode(&books)
+	checkErr(err)
+
+	for i := 0; i < len(books); i++ {
+		booksId := books[i].Book_id
+
+		if booksId == intId {
+			book = append(book, books[i])
+		}
+	}
+
+	return book
+}
+
+/*func GetBookById(id string) []Book {
 	
 	var book []Book //Holds Slice of Book Type
 
@@ -97,68 +150,58 @@ func GetBookById(id string) []Book {
 	}
 
 	return book
-}// end GetBook()
+}// end GetBook()*/
 
 //Returns Book Slice of multiple books that are not checked out
 func GetCheckedInBook() []Book {
-	
-	var books []Book //Holds Slice of Book Type
+	var checkedBooks []Book
+	var books []Book
 
-	//DB Connection
-	db, err := sql.Open("mysql", connectionString)
+	request, err := http.NewRequest("GET", url, nil)
 	checkErr(err)
-	defer db.Close() //Close after func GetBook ends
 
-	//Grab entire rows of data within a query
-	bookRows, err := db.Query("SELECT b.Book_Id, b.Book_Title, b.Book_AuthFName, b.Book_AuthLName, b.Library_Id, CASE WHEN b.Book_check = 1 THEN 'In' ELSE 'Out' END AS B_check, b.Mid, date_format(b.Book_Out_Date, '%Y-%m-%d'), m.Member_fname, m.Member_lname FROM books b LEFT JOIN member m ON b.Mid = m.Member_id WHERE book_check = 1")
-	//Check for Errors in DB Query
+	client := &http.Client{}
+
+	response, err := client.Do(request)
 	checkErr(err)
-	//For Every Book Row that's not null/nil place
-	for bookRows.Next() {
-		b := Book{} //book type
-		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date, &b.Member_fname, &b.Member_lname)
-		checkErr(err)
-		if b.Book_out_date.Valid{
-			books = append(books, b)
-		} else {
-			b.Book_out_date.String = ""
-			books = append(books, b)
+	defer response.Body.Close()
+
+	err = json.NewDecoder(response.Body).Decode(&books)
+	checkErr(err)
+
+	for i := 0; i < len(books); i++ {
+		if books[i].Book_check == "In" {
+			checkedBooks = append(checkedBooks, books[i])
 		}
-
 	}
 
-	return books
+	return checkedBooks
 }
 
 //Returns Book Slice of multiple books that are checked out
 func GetCheckedOutBook() []Book {
-	
-	var books []Book //Holds Slice of Book Type
+	var checkedBooks []Book
+	var books []Book
 
-	//DB Connection
-	db, err := sql.Open("mysql", connectionString)
+	request, err := http.NewRequest("GET", url, nil)
 	checkErr(err)
-	defer db.Close() //Close after func GetBook ends
 
-	//Grab entire rows of data within a query
-	bookRows, err := db.Query("SELECT b.Book_Id, b.Book_Title, b.Book_AuthFName, b.Book_AuthLName, b.Library_Id, CASE WHEN b.Book_check = 1 THEN 'In' ELSE 'Out' END AS B_check, b.Mid, date_format(b.Book_Out_Date, '%Y-%m-%d'), m.Member_fname, m.Member_lname FROM books b LEFT JOIN member m ON b.Mid = m.Member_id WHERE book_check = 2")
-	//Check for Errors in DB Query
+	client := &http.Client{}
+
+	response, err := client.Do(request)
 	checkErr(err)
-	//For Every Book Row that's not null/nil place
-	for bookRows.Next() {
-		b := Book{} //book type
-		err = bookRows.Scan(&b.Book_id, &b.Book_title, &b.Book_authF, &b.Book_authL, &b.Library_id, &b.Book_check, &b.Mid, &b.Book_out_date, &b.Member_fname, &b.Member_lname)
-		checkErr(err)
-		if b.Book_out_date.Valid{
-			books = append(books, b)
-		} else {
-			b.Book_out_date.String = ""
-			books = append(books, b)
+	defer response.Body.Close()
+
+	err = json.NewDecoder(response.Body).Decode(&books)
+	checkErr(err)
+
+	for i := 0; i < len(books); i++ {
+		if books[i].Book_check == "Out" {
+			checkedBooks = append(checkedBooks, books[i])
 		}
-
 	}
 
-	return books
+	return checkedBooks
 }
 
 // Return Books under search params
