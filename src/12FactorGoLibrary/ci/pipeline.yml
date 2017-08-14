@@ -6,7 +6,7 @@ resources:
     uri: https://github.com/ricky-clevinger/12FactorGoLibrary
     branch: master
 
-- name: library-deploy-test
+- name: library-deploy
   type: cf
   source:
     api: {{cf-api}}
@@ -17,7 +17,7 @@ resources:
     skip_cert_check: true
     
 jobs:
-- name: deploy-test
+- name: deploy
   serial: true
   plan:
   - get: go-library-source
@@ -25,7 +25,7 @@ jobs:
   - task: build-deploy-go-library
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
     privileged: true
-  - put: library-deploy-test
+  - put: library-deploy
     params:
        manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
        path: go-library-source/src/12FactorGoLibrary
