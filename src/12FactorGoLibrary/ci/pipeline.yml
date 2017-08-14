@@ -27,20 +27,10 @@ resources:
     skip_cert_check: true
     
 jobs:
-- name: unit-test-go-job
-  serial: true
-  plan:
-  - get: go-library-source
-    trigger: true
-  - task: go-unit-tests
-    file: go-library-source/src/12FactorGoLibrary/ci/goUnitTest.yml
-    privileged: true
-
 - name: deploy-test
   serial: true
   plan:
   - get: go-library-source
-    passed: [ unit-test-go-job ]
     trigger: true
   - task: build-deploy-go-library
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
