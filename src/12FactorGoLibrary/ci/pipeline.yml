@@ -3,7 +3,7 @@ resources:
 - name: go-library-source
   type: git
   source:
-    uri: https://github.com/christopherneuhardt/12FactorGoLibrary
+    uri: https://github.com/ricky-clevinger/12FactorGoLibrary
     branch: master
 
 - name: library-deploy-test
