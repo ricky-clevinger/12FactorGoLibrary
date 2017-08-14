@@ -15,16 +15,6 @@ resources:
     organization: {{cf-organization}}
     space: {{cf-space}}
     skip_cert_check: true
-
-- name: library-deploy-prod
-  type: cf
-  source:
-    api: {{cf-api}}
-    username: {{cf-username}}
-    password: {{cf-password}}
-    organization: {{cf-organization}}
-    space: {{cf-space}}
-    skip_cert_check: true
     
 jobs:
 - name: deploy-test
@@ -36,19 +26,6 @@ jobs:
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
     privileged: true
   - put: library-deploy-test
-    params:
-       manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
-       path: go-library-source/src/12FactorGoLibrary
-- name: deploy-prod
-  serial: true
-  plan:
-  - get: go-library-source
-    passed: [ deploy-test ]
-    trigger: false
-  - task: build-deploy-go-library
-    file: go-library-source/src/12FactorGoLibrary/ci/build.yml
-    privileged: true
-  - put: library-deploy-prod
     params:
        manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
        path: go-library-source/src/12FactorGoLibrary
