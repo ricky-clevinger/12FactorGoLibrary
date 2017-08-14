@@ -49,9 +49,6 @@ jobs:
     params:
        manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
        path: go-library-source/src/12FactorGoLibrary
-  - task: functionalTestLibrary
-    privileged: true
-    file: go-library-source/src/12FactorGoLibrary/ci/functionalTest.yml
 - name: deploy-prod
   serial: true
   plan:
