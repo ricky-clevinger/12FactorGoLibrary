@@ -9,21 +9,21 @@ resources:
 - name: library-deploy-test
   type: cf
   source:
-    api: {{tst-cf-api}}
-    username: {{tst-cf-username}}
-    password: {{tst-cf-password}}
-    organization: {{tst-cf-organization}}
-    space: {{tst-cf-space}}
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
     skip_cert_check: true
 
 - name: library-deploy-prod
   type: cf
   source:
-    api: {{prod-cf-api}}
-    username: {{prod-cf-username}}
-    password: {{prod-cf-password}}
-    organization: {{prod-cf-organization}}
-    space: {{prod-cf-space}}
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
     skip_cert_check: true
     
 jobs:
