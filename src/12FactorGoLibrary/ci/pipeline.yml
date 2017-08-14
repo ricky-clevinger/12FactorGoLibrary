@@ -3,7 +3,7 @@ resources:
 - name: go-library-source
   type: git
   source:
-    uri: https://github.com/ricky-clevinger/12FactorGoLibrary
+    uri: https://github.com/christopherneuhardt/12FactorGoLibrary
     branch: master
 
 - name: library-deploy-test
@@ -15,16 +15,53 @@ resources:
     organization: {{cf-organization}}
     space: {{cf-space}}
     skip_cert_check: true
+
+- name: library-deploy-prod
+  type: cf
+  source:
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
+    skip_cert_check: true
     
+jobs:
+- name: unit-test-go-job
+  serial: true
+  plan:
+  - get: go-library-source
+    trigger: true
+  - task: go-unit-tests
+    file: go-library-source/src/12FactorGoLibrary/ci/goUnitTest.yml
+    privileged: true
+
 - name: deploy-test
   serial: true
   plan:
   - get: go-library-source
+    passed: [ unit-test-go-job ]
     trigger: true
   - task: build-deploy-go-library
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
     privileged: true
   - put: library-deploy-test
+    params:
+       manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
+       path: go-library-source/src/12FactorGoLibrary
+  - task: functionalTestLibrary
+    privileged: true
+    file: go-library-source/src/12FactorGoLibrary/ci/functionalTest.yml
+- name: deploy-prod
+  serial: true
+  plan:
+  - get: go-library-source
+    passed: [ deploy-test ]
+    trigger: false
+  - task: build-deploy-go-library
+    file: go-library-source/src/12FactorGoLibrary/ci/build.yml
+    privileged: true
+  - put: library-deploy-prod
     params:
        manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
        path: go-library-source/src/12FactorGoLibrary
