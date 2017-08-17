@@ -6,64 +6,24 @@ package main
 import (
 	"book"
 	"database/sql"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"helper"
 	"html"
-	"html/template"
-	//"log"
 	"member"
 	"net/http"
 	"os"
-	"regexp"
 	"time"
+	"handlers"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|edit-book/[0-9]+|bookEdited|delete-book/[0-9]+|bookDeleted|members.html|add-member.html|memberCreated|edit-member/[0-9]+|memberEdited|delete-member/[0-9]+|memberDeleted|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/bookCreated.html", "views/edit-book.html", "views/bookEdited.html", "views/delete-book.html", "views/members.html", "views/add-member.html", "views/memberCreated.html", "views/edit-member.html", "views/memberEdited.html", "views/delete-member.html", "views/test.html", "views/checkout.html", "views/checkedout.html", "views/checkin.html", "views/checkedin.html", "views/results.html"))
-
-type Page struct {
-	Members []member.Member
-	Books   []book.Book
-}
-
-func loadPage(members []member.Member, books []book.Book) *Page {
-	if len(members) > 0 {
-		fmt.Println("Loaded member #: ", len(members))
-	}
-	if len(books) > 0 {
-		fmt.Println("Loaded book #: ", len(books))
-	}
-	return &Page{Members: members, Books: books}
-}
-
-//Renders HTML page
-func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
-	err := templates.ExecuteTemplate(w, tmpl+".html", p)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-//Validates path and calls handler
-func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		m := validPath.FindStringSubmatch(r.URL.Path)
-		if m == nil {
-			http.NotFound(w, r)
-			return
-		}
-		fn(w, r)
-	}
-}
 
 //Handles the index page
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	p := loadPage(members, books)
-	renderTemplate(w, "index", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "index", p)
 }
 
 //Handles the admin page
@@ -71,8 +31,8 @@ func adminHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	p := loadPage(members, books)
-	renderTemplate(w, "admin", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "admin", p)
 }
 
 //Handles the books page
@@ -83,8 +43,8 @@ func booksHandler(w http.ResponseWriter, r *http.Request) {
 	members = member.GetMembers()
 	books = book.GetBook()
 
-	p := loadPage(members, books)
-	renderTemplate(w, "books", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "books", p)
 }
 
 //Handles the create book page
@@ -92,8 +52,8 @@ func addBookHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	p := loadPage(members, books)
-	renderTemplate(w, "add-book", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "add-book", p)
 }
 
 func bookCreatedHandler(w http.ResponseWriter, r *http.Request) {
@@ -110,8 +70,8 @@ func bookCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		book.AddBook(bookTitle, bookAuthF, bookAuthL)
 
-		p := loadPage(members, books)
-		renderTemplate(w, "bookCreated", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "bookCreated", p)
 	}
 }
 
@@ -127,8 +87,8 @@ func editBookHandler(w http.ResponseWriter, r *http.Request) {
 	if len(books) < 1 {
 		http.Redirect(w, r, "/books.html", http.StatusFound)
 	} else {
-		p := loadPage(members, books)
-		renderTemplate(w, "edit-book", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "edit-book", p)
 	}
 }
 
@@ -155,8 +115,8 @@ func bookEditedHandler(w http.ResponseWriter, r *http.Request) {
 
 		stmt.Exec(bookTitle, bookAuthF, bookAuthL, bookId)
 
-		p := loadPage(members, books)
-		renderTemplate(w, "bookEdited", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "bookEdited", p)
 	}
 }
 
@@ -172,8 +132,8 @@ func deleteBookHandler(w http.ResponseWriter, r *http.Request) {
 	if len(books) < 1 {
 		http.Redirect(w, r, "/books.html", http.StatusFound)
 	} else {
-		p := loadPage(members, books)
-		renderTemplate(w, "delete-book", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "delete-book", p)
 	}
 }
 
@@ -201,8 +161,8 @@ func membersHandler(w http.ResponseWriter, r *http.Request) {
 
 	members = member.GetMembers()
 
-	p := loadPage(members, books)
-	renderTemplate(w, "members", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "members", p)
 }
 
 //Handles the create member page
@@ -210,8 +170,8 @@ func addMemberHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	p := loadPage(members, books)
-	renderTemplate(w, "add-member", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "add-member", p)
 }
 
 //Handles the create member page
@@ -235,8 +195,8 @@ func memberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 
 		stmt.Exec(memberFName, memberLName)
 
-		p := loadPage(members, books)
-		renderTemplate(w, "memberCreated", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "memberCreated", p)
 	}
 }
 
@@ -252,8 +212,8 @@ func editMemberHandler(w http.ResponseWriter, r *http.Request) {
 	if len(members) < 1 {
 		http.Redirect(w, r, "/members.html", http.StatusFound)
 	} else {
-		p := loadPage(members, books)
-		renderTemplate(w, "edit-member", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "edit-member", p)
 	}
 }
 
@@ -280,8 +240,8 @@ func memberEditedHandler(w http.ResponseWriter, r *http.Request) {
 
 		stmt.Exec(memberFName, memberLName, memberId)
 
-		p := loadPage(members, books)
-		renderTemplate(w, "memberEdited", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "memberEdited", p)
 	}
 }
 
@@ -297,8 +257,8 @@ func deleteMemberHandler(w http.ResponseWriter, r *http.Request) {
 	if len(members) < 1 {
 		http.Redirect(w, r, "/members.html", http.StatusFound)
 	} else {
-		p := loadPage(members, books)
-		renderTemplate(w, "delete-member", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "delete-member", p)
 	}
 }
 
@@ -327,8 +287,8 @@ func testHandler(w http.ResponseWriter, r *http.Request) {
 	members = member.GetMembers()
 	books = book.GetBook()
 
-	p := loadPage(members, books)
-	renderTemplate(w, "test", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "test", p)
 }
 
 //Handles the checkout page
@@ -339,8 +299,8 @@ func checkoutHandler(w http.ResponseWriter, r *http.Request) {
 	var books []book.Book
 	books = book.GetCheckedInBook()
 
-	p := loadPage(members, books)
-	renderTemplate(w, "checkout", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "checkout", p)
 }
 
 //Handles the checkout page
@@ -370,8 +330,8 @@ func checkedoutHandler(w http.ResponseWriter, r *http.Request) {
 
 	stmt2.Exec(memberId, date, bookId)
 
-	p := loadPage(members, books)
-	renderTemplate(w, "checkedout", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "checkedout", p)
 }
 
 //Handles the checkin page
@@ -382,8 +342,8 @@ func checkinHandler(w http.ResponseWriter, r *http.Request) {
 	var books []book.Book
 	books = book.GetCheckedOutBook()
 
-	p := loadPage(members, books)
-	renderTemplate(w, "checkin", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "checkin", p)
 }
 
 //Handles the checkin page
@@ -412,8 +372,8 @@ func checkedinHandler(w http.ResponseWriter, r *http.Request) {
 
 	stmt2.Exec(bookId)
 
-	p := loadPage(members, books)
-	renderTemplate(w, "checkedin", p)
+	p := handlers.LoadPage(members, books)
+	handlers.RenderTemplate(w, "checkedin", p)
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
@@ -429,8 +389,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		books = book.GetSearchedBook(search)
 		members = member.GetSearchedMember(search)
 
-		p := loadPage(members, books)
-		renderTemplate(w, "results", p)
+		p := handlers.LoadPage(members, books)
+		handlers.RenderTemplate(w, "results", p)
 	}
 }
 
@@ -454,28 +414,28 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 //Handles
 func handles() {
 
-	http.HandleFunc("/index.html", makeHandler(indexHandler))
-	http.HandleFunc("/search", makeHandler(searchHandler))
-	http.HandleFunc("/admin.html", makeHandler(adminHandler))
-	http.HandleFunc("/books.html", makeHandler(booksHandler))
-	http.HandleFunc("/add-book.html", makeHandler(addBookHandler))
-	http.HandleFunc("/bookCreated", makeHandler(bookCreatedHandler))
-	http.HandleFunc("/edit-book/", makeHandler(editBookHandler))
-	http.HandleFunc("/bookEdited", makeHandler(bookEditedHandler))
-	http.HandleFunc("/delete-book/", makeHandler(deleteBookHandler))
-	http.HandleFunc("/bookDeleted", makeHandler(bookDeletedHandler))
-	http.HandleFunc("/members.html", makeHandler(membersHandler))
-	http.HandleFunc("/add-member.html", makeHandler(addMemberHandler))
-	http.HandleFunc("/memberCreated", makeHandler(memberCreatedHandler))
-	http.HandleFunc("/edit-member/", makeHandler(editMemberHandler))
-	http.HandleFunc("/memberEdited", makeHandler(memberEditedHandler))
-	http.HandleFunc("/delete-member/", makeHandler(deleteMemberHandler))
-	http.HandleFunc("/memberDeleted", makeHandler(memberDeletedHandler))
-	http.HandleFunc("/test.html", makeHandler(testHandler))
-	http.HandleFunc("/checkout.html", makeHandler(checkoutHandler))
-	http.HandleFunc("/checkedout", makeHandler(checkedoutHandler))
-	http.HandleFunc("/checkin.html", makeHandler(checkinHandler))
-	http.HandleFunc("/checkedin", makeHandler(checkedinHandler))
+	http.HandleFunc("/index.html", handlers.MakeHandler(indexHandler))
+	http.HandleFunc("/search", handlers.MakeHandler(searchHandler))
+	http.HandleFunc("/admin.html", handlers.MakeHandler(adminHandler))
+	http.HandleFunc("/books.html", handlers.MakeHandler(booksHandler))
+	http.HandleFunc("/add-book.html", handlers.MakeHandler(addBookHandler))
+	http.HandleFunc("/bookCreated", handlers.MakeHandler(bookCreatedHandler))
+	http.HandleFunc("/edit-book/", handlers.MakeHandler(editBookHandler))
+	http.HandleFunc("/bookEdited", handlers.MakeHandler(bookEditedHandler))
+	http.HandleFunc("/delete-book/", handlers.MakeHandler(deleteBookHandler))
+	http.HandleFunc("/bookDeleted", handlers.MakeHandler(bookDeletedHandler))
+	http.HandleFunc("/members.html", handlers.MakeHandler(membersHandler))
+	http.HandleFunc("/add-member.html", handlers.MakeHandler(addMemberHandler))
+	http.HandleFunc("/memberCreated", handlers.MakeHandler(memberCreatedHandler))
+	http.HandleFunc("/edit-member/", handlers.MakeHandler(editMemberHandler))
+	http.HandleFunc("/memberEdited", handlers.MakeHandler(memberEditedHandler))
+	http.HandleFunc("/delete-member/", handlers.MakeHandler(deleteMemberHandler))
+	http.HandleFunc("/memberDeleted", handlers.MakeHandler(memberDeletedHandler))
+	http.HandleFunc("/test.html", handlers.MakeHandler(testHandler))
+	http.HandleFunc("/checkout.html", handlers.MakeHandler(checkoutHandler))
+	http.HandleFunc("/checkedout", handlers.MakeHandler(checkedoutHandler))
+	http.HandleFunc("/checkin.html", handlers.MakeHandler(checkinHandler))
+	http.HandleFunc("/checkedin", handlers.MakeHandler(checkedinHandler))
 }
 
 func main() {
