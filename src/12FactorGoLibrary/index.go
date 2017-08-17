@@ -451,9 +451,9 @@ func redirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/index.html", 301)
 }
 
-func main() {
-	http.HandleFunc("/", redirect)
-	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
+//Handles
+func handles() {
+
 	http.HandleFunc("/index.html", makeHandler(indexHandler))
 	http.HandleFunc("/search", makeHandler(searchHandler))
 	http.HandleFunc("/admin.html", makeHandler(adminHandler))
@@ -476,5 +476,11 @@ func main() {
 	http.HandleFunc("/checkedout", makeHandler(checkedoutHandler))
 	http.HandleFunc("/checkin.html", makeHandler(checkinHandler))
 	http.HandleFunc("/checkedin", makeHandler(checkedinHandler))
+}
+
+func main() {
+	http.HandleFunc("/", redirect)
+	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
+	handles()
 	http.ListenAndServe(":8080", nil)
 }

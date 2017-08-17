@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export GOPATH=$HOME/go/12FactorGoLibrary
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+echo The gopath has been set.
