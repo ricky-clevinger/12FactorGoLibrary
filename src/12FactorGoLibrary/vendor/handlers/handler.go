@@ -431,5 +431,37 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//Redirect to index.html
+func Redirect(w http.ResponseWriter, r *http.Request) {
+
+	http.Redirect(w, r, "/index.html", 301)
+}
+
+//Handles
+func Handles() {
+
+	http.HandleFunc("/index.html", MakeHandler(IndexHandler))
+	http.HandleFunc("/search", MakeHandler(SearchHandler))
+	http.HandleFunc("/admin.html", MakeHandler(AdminHandler))
+	http.HandleFunc("/books.html", MakeHandler(BooksHandler))
+	http.HandleFunc("/add-book.html", MakeHandler(AddBookHandler))
+	http.HandleFunc("/bookCreated", MakeHandler(BookCreatedHandler))
+	http.HandleFunc("/edit-book/", MakeHandler(EditBookHandler))
+	http.HandleFunc("/bookEdited", MakeHandler(BookEditedHandler))
+	http.HandleFunc("/delete-book/", MakeHandler(DeleteBookHandler))
+	http.HandleFunc("/bookDeleted", MakeHandler(BookDeletedHandler))
+	http.HandleFunc("/members.html", MakeHandler(MembersHandler))
+	http.HandleFunc("/add-member.html", MakeHandler(AddMemberHandler))
+	http.HandleFunc("/memberCreated", MakeHandler(MemberCreatedHandler))
+	http.HandleFunc("/edit-member/", MakeHandler(EditMemberHandler))
+	http.HandleFunc("/memberEdited", MakeHandler(MemberEditedHandler))
+	http.HandleFunc("/delete-member/", MakeHandler(DeleteMemberHandler))
+	http.HandleFunc("/memberDeleted", MakeHandler(MemberDeletedHandler))
+	http.HandleFunc("/test.html", MakeHandler(TestHandler))
+	http.HandleFunc("/checkout.html", MakeHandler(CheckoutHandler))
+	http.HandleFunc("/checkedout", MakeHandler(CheckedoutHandler))
+	http.HandleFunc("/checkin.html", MakeHandler(CheckinHandler))
+	http.HandleFunc("/checkedin", MakeHandler(CheckedinHandler))
+}
 
 
