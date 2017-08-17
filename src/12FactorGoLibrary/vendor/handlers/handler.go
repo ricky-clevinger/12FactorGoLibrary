@@ -4,20 +4,19 @@ package handlers
 //Updated On: 8/17/2017
 //Last Updated By: Ricky Clevinger
 
-
 import (
 	"book"
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"helper"
 	"html"
+	"html/template"
 	"member"
 	"net/http"
 	"os"
-	"time"
-	"fmt"
-	"html/template"
 	"regexp"
+	"time"
 )
 
 var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|edit-book/[0-9]+|bookEdited|delete-book/[0-9]+|bookDeleted|members.html|add-member.html|memberCreated|edit-member/[0-9]+|memberEdited|delete-member/[0-9]+|memberDeleted|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
@@ -27,7 +26,6 @@ type Page struct {
 	Members []member.Member
 	Books   []book.Book
 }
-
 
 func LoadPage(members []member.Member, books []book.Book) *Page {
 	if len(members) > 0 {
@@ -102,9 +100,12 @@ func BookCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	bookTitle := html.EscapeString(r.FormValue("title"))
-	bookAuthF := html.EscapeString(r.FormValue("fName"))
-	bookAuthL := html.EscapeString(r.FormValue("lName"))
+	bookTitle := helper.HTMLClean(r.FormValue("title"))
+	//bookTitle := html.EscapeString(r.FormValue("title"))
+	bookAuthF := helper.HTMLClean(r.FormValue("fName"))
+	//bookAuthF := html.EscapeString(r.FormValue("fName"))
+	bookAuthL := helper.HTMLClean(r.FormValue("lName"))
+	//bookAuthL := html.EscapeString(r.FormValue("lName"))
 
 	if len(bookTitle) == 0 || len(bookAuthF) == 0 || len(bookAuthL) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in add-book.html.")
@@ -140,9 +141,12 @@ func BookEditedHandler(w http.ResponseWriter, r *http.Request) {
 	var books []book.Book
 
 	bookId := html.EscapeString(r.FormValue("bookId"))
-	bookTitle := html.EscapeString(r.FormValue("title"))
-	bookAuthF := html.EscapeString(r.FormValue("fName"))
-	bookAuthL := html.EscapeString(r.FormValue("lName"))
+	bookTitle := helper.HTMLClean(r.FormValue("title"))
+	//bookTitle := html.EscapeString(r.FormValue("title"))
+	bookAuthF := helper.HTMLClean(r.FormValue("fName"))
+	//bookAuthF := html.EscapeString(r.FormValue("fName"))
+	bookAuthL := helper.HTMLClean(r.FormValue("lName"))
+	//bookAuthL := html.EscapeString(r.FormValue("lName"))
 
 	if len(bookId) == 0 || len(bookTitle) == 0 || len(bookAuthF) == 0 || len(bookAuthL) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in edit-book.html.")
@@ -221,8 +225,10 @@ func MemberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	memberFName := html.EscapeString(r.FormValue("fName"))
-	memberLName := html.EscapeString(r.FormValue("lName"))
+	memberFName := helper.HTMLClean(r.FormValue("fName"))
+	//memberFName := html.EscapeString(r.FormValue("fName"))
+	memberLName := helper.HTMLClean(r.FormValue("lName"))
+	//memberLName := html.EscapeString(r.FormValue("lName"))
 
 	if len(memberFName) == 0 || len(memberLName) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in add-member.html.")
@@ -265,8 +271,10 @@ func MemberEditedHandler(w http.ResponseWriter, r *http.Request) {
 	var books []book.Book
 
 	memberId := html.EscapeString(r.FormValue("memId"))
-	memberFName := html.EscapeString(r.FormValue("fName"))
-	memberLName := html.EscapeString(r.FormValue("lName"))
+	memberFName := helper.HTMLClean(r.FormValue("fName"))
+	//memberFName := html.EscapeString(r.FormValue("fName"))
+	memberLName := helper.HTMLClean(r.FormValue("lName"))
+	//memberLName := html.EscapeString(r.FormValue("lName"))
 
 	if len(memberId) == 0 || len(memberFName) == 0 || len(memberLName) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in edit-member.html.")
@@ -468,5 +476,3 @@ func Handles() {
 	http.HandleFunc("/checkin.html", MakeHandler(CheckinHandler))
 	http.HandleFunc("/checkedin", MakeHandler(CheckedinHandler))
 }
-
-
