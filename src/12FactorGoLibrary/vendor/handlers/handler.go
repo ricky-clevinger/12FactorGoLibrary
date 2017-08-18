@@ -140,18 +140,26 @@ func BookEditedHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	bookId := html.EscapeString(r.FormValue("bookId"))
+	bookId := helper.HTMLClean(r.FormValue("bookId"))
 	bookTitle := helper.HTMLClean(r.FormValue("title"))
-	//bookTitle := html.EscapeString(r.FormValue("title"))
 	bookAuthF := helper.HTMLClean(r.FormValue("fName"))
-	//bookAuthF := html.EscapeString(r.FormValue("fName"))
 	bookAuthL := helper.HTMLClean(r.FormValue("lName"))
-	//bookAuthL := html.EscapeString(r.FormValue("lName"))
+
+	//
+	//Consider creating method to check if length == 0
+	//
+	//Maybe a method that takes an undetermined # of inputs and
+	//	returns a false if any are == 0?
+	//
 
 	if len(bookId) == 0 || len(bookTitle) == 0 || len(bookAuthF) == 0 || len(bookAuthL) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in edit-book.html.")
 		http.Redirect(w, r, "/edit-book.html", http.StatusFound)
 	} else {
+		//
+		//Move Library Env Var to a properties file
+		//Move all database functions to backing service
+		//
 		db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 		helper.CheckErr(err)
 		defer db.Close()
@@ -185,7 +193,11 @@ func DeleteBookHandler(w http.ResponseWriter, r *http.Request) {
 
 //Handles the deleted book page
 func BookDeletedHandler(w http.ResponseWriter, r *http.Request) {
-	id := html.EscapeString(r.FormValue("bookId"))
+	id := helper.HTMLClean(r.FormValue("bookId"))
+
+	//
+	//Move Database functionality to backing service
+	//
 
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 	helper.CheckErr(err)
@@ -226,9 +238,13 @@ func MemberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	var books []book.Book
 
 	memberFName := helper.HTMLClean(r.FormValue("fName"))
-	//memberFName := html.EscapeString(r.FormValue("fName"))
 	memberLName := helper.HTMLClean(r.FormValue("lName"))
-	//memberLName := html.EscapeString(r.FormValue("lName"))
+
+	//
+	//Move Database functionality to Backing Service
+	//Maybe a method that takes an undetermined # of inputs and
+	//      returns a false if any are == 0?
+	//
 
 	if len(memberFName) == 0 || len(memberLName) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in add-member.html.")
@@ -270,11 +286,9 @@ func MemberEditedHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
-	memberId := html.EscapeString(r.FormValue("memId"))
+	memberId := helper.HTMLClean(r.FormValue("memId"))
 	memberFName := helper.HTMLClean(r.FormValue("fName"))
-	//memberFName := html.EscapeString(r.FormValue("fName"))
 	memberLName := helper.HTMLClean(r.FormValue("lName"))
-	//memberLName := html.EscapeString(r.FormValue("lName"))
 
 	if len(memberId) == 0 || len(memberFName) == 0 || len(memberLName) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in edit-member.html.")
@@ -283,6 +297,8 @@ func MemberEditedHandler(w http.ResponseWriter, r *http.Request) {
 		db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 		helper.CheckErr(err)
 		defer db.Close()
+
+		//Move Database functionality to backing service
 
 		//Log transaction
 		stmt, err := db.Prepare("UPDATE member SET member_fname = ?, member_lname = ? WHERE member_id = ?")
@@ -315,6 +331,8 @@ func DeleteMemberHandler(w http.ResponseWriter, r *http.Request) {
 //Hanldes the deleted member page
 func MemberDeletedHandler(w http.ResponseWriter, r *http.Request) {
 	id := html.EscapeString(r.FormValue("memId"))
+
+	//move database functions, change env var location
 
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 	helper.CheckErr(err)
@@ -358,10 +376,14 @@ func CheckedoutHandler(w http.ResponseWriter, r *http.Request) {
 	var members []member.Member
 	var books []book.Book
 
+	//
+	//Move database functions to the backing service
+	//
+
 	current_time := time.Now().Local()
 
-	memberId := html.EscapeString(r.FormValue("selPerson"))
-	bookId := html.EscapeString(r.FormValue("selBook"))
+	memberId := helper.HTMLClean(r.FormValue("selPerson"))
+	bookId := helper.HTMLClean(r.FormValue("selBook"))
 	date := current_time.Format("2006-01-02 15:04:05")
 
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
@@ -403,7 +425,11 @@ func CheckedinHandler(w http.ResponseWriter, r *http.Request) {
 
 	current_time := time.Now().Local()
 
-	bookId := html.EscapeString(r.FormValue("selBook"))
+	//
+	//Move database functions to the backing service
+	//
+
+	bookId := helper.HTMLClean(r.FormValue("selBook"))
 	date := current_time.Format("2006-01-02 15:04:05")
 
 	db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
@@ -430,7 +456,11 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 
 	var books []book.Book
 	var members []member.Member
-	search := html.EscapeString(r.FormValue("s-bar"))
+	search := helper.HTMLClean(r.FormValue("s-bar"))
+
+	//
+	//Move database functions to the backing service
+	//
 
 	if len(search) < 1 {
 		os.Stderr.WriteString("Empty fields inputted in home page search.")
