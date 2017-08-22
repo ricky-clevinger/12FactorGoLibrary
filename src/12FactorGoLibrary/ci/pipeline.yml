@@ -23,14 +23,13 @@ resources:
     initial_version: 0.0.1
     uri: https://github.com/ricky-clevinger/12FactorGoLibrary
     branch: master
+    file: master
     
 jobs:
 - name: deploy
   serial: true
   plan:
   - get: go-library-source
-    trigger: true
-  - get: resource-version
     trigger: true
   - task: build-deploy-go-library
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
@@ -39,3 +38,9 @@ jobs:
     params:
        manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
        path: go-library-source/src/12FactorGoLibrary
+  
+- name: job-versioning
+  public: true
+  serial: true
+  plan:
+  - get: resource-version
