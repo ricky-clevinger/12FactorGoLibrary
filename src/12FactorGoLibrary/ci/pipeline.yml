@@ -22,15 +22,15 @@ resources:
     driver: git
     initial_version: 0.0.1
     uri: https://github.com/ricky-clevinger/12FactorGoLibrary
-    branch: version
-    file: version
+    branch: master
     
 jobs:
 - name: deploy
   serial: true
   plan:
-  - get: resource-version
   - get: go-library-source
+    trigger: true
+  - get: resource-version
     trigger: true
   - task: build-deploy-go-library
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
