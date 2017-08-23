@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	"net/http"
 	_ "github.com/go-sql-driver/mysql"
+	"helper"
 )
 
 //Gets the connection string
@@ -31,16 +32,16 @@ func GetMembers() []Member {
 	var members []Member
 
 	request, err := http.NewRequest("GET", url, nil)
-	checkErr(err)
+	helper.CheckErr(err)
 
 	client := &http.Client{}
 
 	response, err := client.Do(request)
-	checkErr(err)
+	helper.CheckErr(err)
 	defer response.Body.Close()
 
 	err = json.NewDecoder(response.Body).Decode(&members)
-	checkErr(err)
+	helper.CheckErr(err)
 
 	return members
 }
@@ -50,19 +51,19 @@ func GetMemberById(id string) []Member {
 	var member []Member
 	var members []Member
 	intId, err := strconv.Atoi(id)
-	checkErr(err)
+	helper.CheckErr(err)
 
 	request, err := http.NewRequest("GET", url, nil)
-	checkErr(err)
+	helper.CheckErr(err)
 
 	client := &http.Client{}
 
 	response, err := client.Do(request)
-	checkErr(err)
+	helper.CheckErr(err)
 	defer response.Body.Close()
 
 	err = json.NewDecoder(response.Body).Decode(&members)
-	checkErr(err)
+	helper.CheckErr(err)
 
 	for i := 0; i < len(members); i++ {
 		membersId := members[i].Member_id
@@ -104,29 +105,31 @@ func GetSearchedMember(s string) []Member {
 
 	//DB Connection
 	db, err := sql.Open("mysql", connectionString)
-	checkErr(err)
+	helper.CheckErr(err)
 	defer db.Close() //Close after func GetSearchedMember(s string) ends
 
 	//Prepare entire rows of data within a query
 	memberRows, err := db.Query("SELECT member_id, member_fname, member_lname FROM member WHERE member_fname like ? OR member_lname like ?", search, search)
 	
 	//Check for Errors in DB the Query
-	checkErr(err)
+	helper.CheckErr(err)
 
 	//For Every Member Row that's not null/nil place
 	for memberRows.Next() {
 		m := Member{}
 		err = memberRows.Scan(&m.Member_id, &m.Member_fname, &m.Member_lname)
-		checkErr(err)
+		helper.CheckErr(err)
 		members = append(members, m)
 	}
 
 	return members
 }
 
+/*
 //Checks for errors
 func checkErr(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
+*/
