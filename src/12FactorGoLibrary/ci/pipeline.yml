@@ -28,10 +28,20 @@ resources:
     file: 12FactorGoLibrary
     
 jobs:
+- name: unit-test-go
+  serial: true
+  plan:
+  - get: go-library-source
+    trigger: true
+  - task: go-unit-tests
+    file: go-library-source/src/12FactorGoLibrary/ci/goUnitTest.yml
+    privileged: true
+
 - name: deploy
   serial: true
   plan:
   - get: go-library-source
+    passed: [ unit-test-go ]
     trigger: true
   - put: version
     params: {bump: patch}
