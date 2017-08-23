@@ -11,9 +11,4 @@ inputs:
 - name: go-library-source
 
 run:
-  path: sh
-  args:
-    - -exc
-    - |
-      #unitesting
-      go test
+  path: go-library-source/src/12FactorGoLibrary/ci/goUnitTest.sh
