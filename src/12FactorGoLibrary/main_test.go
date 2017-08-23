@@ -2,8 +2,6 @@ package main
 
 import (
 	"testing"
-	"member"
-	"book"
 	"fmt"
 )
 
