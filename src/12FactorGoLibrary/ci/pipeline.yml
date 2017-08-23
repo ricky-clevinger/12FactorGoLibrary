@@ -16,14 +16,16 @@ resources:
     space: {{cf-space}}
     skip_cert_check: true
     
-- name: resource-version
+
+- name: version
   type: semver
   source:
     driver: git
-    initial_version: 0.0.1
-    uri: https://github.com/ricky-clevinger/12FactorGoLibrary
+    uri: https://github.com/ricky-clevinger/Versions
+    username: ricky-clevinger
+    password: 123098Rlc
     branch: master
-    file: master
+    file: 12FactorGoLibrary
     
 jobs:
 - name: deploy
@@ -31,6 +33,8 @@ jobs:
   plan:
   - get: go-library-source
     trigger: true
+  - put: version
+    params: {bump: patch}
   - task: build-deploy-go-library
     file: go-library-source/src/12FactorGoLibrary/ci/build.yml
     privileged: true
@@ -38,9 +42,4 @@ jobs:
     params:
        manifest: go-library-source/src/12FactorGoLibrary/manifest.yml
        path: go-library-source/src/12FactorGoLibrary
-  
-- name: job-versioning
-  public: true
-  serial: true
-  plan:
-  - get: resource-version
+
