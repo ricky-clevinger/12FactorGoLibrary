@@ -110,4 +110,34 @@ func Validate(page http.HandlerFunc, role string) http.HandlerFunc {
 	})
 }
 
+// middleware to protect private pages
+func Validate2(page http.HandlerFunc, role1, role2 string) http.HandlerFunc {
+	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		cookie, err := req.Cookie("Auth")
+		if err != nil {
+			http.NotFound(res, req)
+			return
+		}
+
+		token, err := jwt.ParseWithClaims(cookie.Value, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("Unexpected signing method")
+			}
+			return []byte("secret"), nil
+		})
+		if err != nil {
+			http.NotFound(res, req)
+			return
+		}
+
+		if claims, ok := token.Claims.(*Claims); ok && token.Valid && claims.Role == role1 || claims.Role == role2{
+			ctx := context.WithValue(req.Context(), MyKey, *claims)
+			page(res, req.WithContext(ctx))
+		} else {
+			http.NotFound(res, req)
+			return
+		}
+	})
+}
+
 
