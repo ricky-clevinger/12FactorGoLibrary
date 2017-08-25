@@ -19,7 +19,7 @@ const MyKey Key = 0
 
 // JWT schema of the data it will store
 type Claims struct {
-	Username string `json:"username"`
+	Role string `json:"role"`
 	jwt.StandardClaims
 }
 
@@ -32,14 +32,15 @@ func SetToken(res http.ResponseWriter, req *http.Request) {
 	var members []member.Member
 
 	members = member.MemberExist(mail,pass)
+	role := members[0].Role
 
 	if (len(members) > 0){
-	
+			
 		expireToken := time.Now().Add(time.Hour * 1).Unix()
 		expireCookie := time.Now().Add(time.Hour * 1)
 
 		claims := Claims{
-			mail,
+			role,
 			jwt.StandardClaims{
 				ExpiresAt: expireToken,
 				Issuer:    "localhost:8080",
@@ -75,12 +76,12 @@ func ProtectedProfile(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(res, "Hello %s", claims.Username)
+	fmt.Fprintf(res, "Hello %s", claims.Role)
 }
 
 
 // middleware to protect private pages
-func Validate(page http.HandlerFunc) http.HandlerFunc {
+func Validate(page http.HandlerFunc, role string) http.HandlerFunc {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		cookie, err := req.Cookie("Auth")
 		if err != nil {
@@ -99,7 +100,7 @@ func Validate(page http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		if claims, ok := token.Claims.(*Claims); ok && token.Valid {
+		if claims, ok := token.Claims.(*Claims); ok && token.Valid && claims.Role == role{
 			ctx := context.WithValue(req.Context(), MyKey, *claims)
 			page(res, req.WithContext(ctx))
 		} else {

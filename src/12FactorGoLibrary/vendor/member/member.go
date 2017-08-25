@@ -25,6 +25,7 @@ type Member struct {
 	Member_id int `json:"Member_id"`
 	Member_fname string `json:"Member_fname"`
 	Member_lname string `json:"Member_lname"`
+	Role string `json:"Role"`
 }
 
 //Get Members
