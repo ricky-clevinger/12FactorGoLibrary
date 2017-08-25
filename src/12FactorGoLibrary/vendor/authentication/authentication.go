@@ -8,7 +8,7 @@ import (
 	"time"
 	"fmt"
 	"context"
-	_ "jwt-go"
+	_ "github.com/dgrijalva/jwt-go"
 	"helper"
 	"member"
 )
