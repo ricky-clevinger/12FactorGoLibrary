@@ -16,10 +16,11 @@ import (
 	"os"
 	"regexp"
 	"time"
+	"authentication"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|edit-book/[0-9]+|bookEdited|delete-book/[0-9]+|bookDeleted|members.html|add-member.html|memberCreated|edit-member/[0-9]+|memberEdited|delete-member/[0-9]+|memberDeleted|test.html|checkout.html|checkedout|checkin.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/bookCreated.html", "views/edit-book.html", "views/bookEdited.html", "views/delete-book.html", "views/members.html", "views/add-member.html", "views/memberCreated.html", "views/edit-member.html", "views/memberEdited.html", "views/delete-member.html", "views/test.html", "views/checkout.html", "views/checkedout.html", "views/checkin.html", "views/checkedin.html", "views/results.html"))
+var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|edit-book/[0-9]+|bookEdited|delete-book/[0-9]+|bookDeleted|members.html|add-member.html|memberCreated|edit-member/[0-9]+|memberEdited|delete-member/[0-9]+|memberDeleted|test.html|checkout.html|checkedout|checkin.html|login.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/bookCreated.html", "views/edit-book.html", "views/login.html", "views/bookEdited.html", "views/delete-book.html", "views/members.html", "views/add-member.html", "views/memberCreated.html", "views/edit-member.html", "views/memberEdited.html", "views/delete-member.html", "views/test.html", "views/checkout.html", "views/checkedout.html", "views/checkin.html", "views/checkedin.html", "views/results.html"))
 
 type Page struct {
 	Members []member.Member
@@ -63,6 +64,15 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := LoadPage(members, books)
 	RenderTemplate(w, "index", p)
+}
+
+//Handles the login page
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+
+	p := LoadPage(members, books)
+	RenderTemplate(w, "login", p)
 }
 
 //Handles the admin page
@@ -205,15 +215,17 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//Redirect to index.html
+//Redirect to login.html
 func Redirect(w http.ResponseWriter, r *http.Request) {
 
-	http.Redirect(w, r, "/index.html", 301)
+	http.Redirect(w, r, "/login.html", 301)
 }
+
 
 //Handles
 func Handles() {
 
+	http.HandleFunc("/login.html", MakeHandler(LoginHandler))
 	http.HandleFunc("/index.html", MakeHandler(IndexHandler))
 	http.HandleFunc("/search", MakeHandler(SearchHandler))
 	http.HandleFunc("/admin.html", MakeHandler(AdminHandler))
@@ -236,4 +248,8 @@ func Handles() {
 	http.HandleFunc("/checkedout", MakeHandler(CheckedoutHandler))
 	http.HandleFunc("/checkin.html", MakeHandler(CheckinHandler))
 	http.HandleFunc("/checkedin", MakeHandler(CheckedinHandler))
+	http.HandleFunc("/settoken", authentication.SetToken)
+	http.HandleFunc("/profile", authentication.Validate(authentication.ProtectedProfile))
+	http.HandleFunc("/logout", authentication.Validate(authentication.Logout))
+	http.HandleFunc("/", Redirect)
 }

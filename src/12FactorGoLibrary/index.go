@@ -10,7 +10,6 @@ import (
 
 
 func main() {
-	http.HandleFunc("/", handlers.Redirect)
 	http.Handle("/resources/", http.StripPrefix("/resources/", http.FileServer(http.Dir("resources"))))
 	handlers.Handles()
 	http.ListenAndServe(":8080", nil)

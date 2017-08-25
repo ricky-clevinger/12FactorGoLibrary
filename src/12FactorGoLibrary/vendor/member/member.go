@@ -46,6 +46,25 @@ func GetMembers() []Member {
 	return members
 }
 
+//Get Members
+func MemberExist(mail, pass string) []Member {
+	var members []Member
+
+	request, err := http.NewRequest("GET", url + "/login/" + mail + "/" + pass, nil)
+	helper.CheckErr(err)
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+	helper.CheckErr(err)
+	defer response.Body.Close()
+
+	err = json.NewDecoder(response.Body).Decode(&members)
+	helper.CheckErr(err)
+
+	return members
+}
+
 //Get Member by ID
 func GetMemberById(id string) []Member {
 	var member []Member
