@@ -65,7 +65,7 @@ func SetToken(res http.ResponseWriter, req *http.Request) {
 func Logout(res http.ResponseWriter, req *http.Request) {
 	deleteCookie := http.Cookie{Name: "Auth", Value: "none", Expires: time.Now()}
 	http.SetCookie(res, &deleteCookie)
-	fmt.Fprintf(res, "Logged Out")
+	http.Redirect(res, req, "/login.html", 307)
 }
 
 // only viewable if the client has a valid token

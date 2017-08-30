@@ -19,8 +19,8 @@ import (
 	"authentication"
 )
 
-var validPath = regexp.MustCompile("^/(index.html|search|results.html|admin.html|books.html|add-book.html|bookCreated|edit-book/[0-9]+|bookEdited|delete-book/[0-9]+|bookDeleted|members.html|add-member.html|memberCreated|edit-member/[0-9]+|memberEdited|delete-member/[0-9]+|memberDeleted|test.html|checkout.html|checkedout|checkin.html|login.html|checkedin)$")
-var templates = template.Must(template.ParseFiles("views/index.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/bookCreated.html", "views/edit-book.html", "views/login.html", "views/bookEdited.html", "views/delete-book.html", "views/members.html", "views/add-member.html", "views/memberCreated.html", "views/edit-member.html", "views/memberEdited.html", "views/delete-member.html", "views/test.html", "views/checkout.html", "views/checkedout.html", "views/checkin.html", "views/checkedin.html", "views/results.html"))
+var validPath = regexp.MustCompile("^/(index.html|search|register.html|results.html|admin.html|books.html|add-book.html|bookCreated|edit-book/[0-9]+|bookEdited|delete-book/[0-9]+|bookDeleted|members.html|add-member.html|memberCreated|edit-member/[0-9]+|memberEdited|delete-member/[0-9]+|memberDeleted|test.html|checkout.html|checkedout|checkin.html|login.html|checkedin)$")
+var templates = template.Must(template.ParseFiles("views/index.html", "views/register.html", "views/admin.html", "views/books.html", "views/add-book.html", "views/bookCreated.html", "views/edit-book.html", "views/login.html", "views/bookEdited.html", "views/delete-book.html", "views/members.html", "views/add-member.html", "views/memberCreated.html", "views/edit-member.html", "views/memberEdited.html", "views/delete-member.html", "views/test.html", "views/checkout.html", "views/checkedout.html", "views/checkin.html", "views/checkedin.html", "views/results.html"))
 
 type Page struct {
 	Members []member.Member
@@ -73,6 +73,15 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := LoadPage(members, books)
 	RenderTemplate(w, "login", p)
+}
+
+//Handles the login page
+func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+	var members []member.Member
+	var books []book.Book
+
+	p := LoadPage(members, books)
+	RenderTemplate(w, "register", p)
 }
 
 //Handles the admin page
@@ -226,6 +235,7 @@ func Redirect(w http.ResponseWriter, r *http.Request) {
 func Handles() {
 
 	http.HandleFunc("/login.html", MakeHandler(LoginHandler))
+	http.HandleFunc("/register.html", MakeHandler(RegisterHandler))
 	http.HandleFunc("/index.html", authentication.Validate2(MakeHandler(IndexHandler), "user", "admin"))
 	http.HandleFunc("/search", authentication.Validate2(MakeHandler(SearchHandler), "user", "admin"))
 	http.HandleFunc("/admin.html", authentication.Validate(MakeHandler(AdminHandler),  "admin"))
@@ -238,7 +248,7 @@ func Handles() {
 	http.HandleFunc("/bookDeleted", authentication.Validate(MakeHandler(BookDeletedHandler),  "admin"))
 	http.HandleFunc("/members.html", authentication.Validate2(MakeHandler(MembersHandler), "user", "admin"))
 	http.HandleFunc("/add-member.html", authentication.Validate(MakeHandler(AddMemberHandler), "admin"))
-	http.HandleFunc("/memberCreated", authentication.Validate(MakeHandler(MemberCreatedHandler),  "admin"))
+	http.HandleFunc("/memberCreated", MakeHandler(MemberCreatedHandler))
 	http.HandleFunc("/edit-member/", authentication.Validate(MakeHandler(EditMemberHandler),  "admin"))
 	http.HandleFunc("/memberEdited", authentication.Validate(MakeHandler(MemberEditedHandler), "admin"))
 	http.HandleFunc("/delete-member/", authentication.Validate(MakeHandler(DeleteMemberHandler), "admin"))

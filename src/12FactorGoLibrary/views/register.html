@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <!-- >
-     Created By: Jonathan Quilliams
-     Created On: 8/3/17
-     Updated By: Jonathan Quilliams
-    Last Update: 8/3/17
-      File Name: add-book.html
+     Created By: Ricky Clevinger
+     Created On: 8/30/17
+     File Name: register.html
 
    Dependencies: bootstrap 3.3.7, jquery 3.2.1, mysql, javascript
 <! -->
@@ -23,46 +21,14 @@
 
         <!-- Custom Style -->
         <link rel="stylesheet" href="../resources/theme.css" ></link>
-
-        
-        
     </head>
 
     <body>
-        <!-- Fixed navbar -->
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">Library App</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="index.html">Home</a></li>
-                    <li class="active" ><a href="admin.html">Admin</a></li>
-		    <li><a href="/logout">Logout</a></li>
-                </ul>
-            </div><!--/.nav-collapse -->
-        </div>
-        </nav>
-
-
         <!-- Main Container -->
         <div class="container theme-showcase" role="main">
             <div class="container">
-                <h2>Enter Book Information</h2>
-                <form class="form-horizontal" action="bookCreated" method="POST">
-                    <div class="form-group">
-                        <div class="col-xs-3">
-                            <label for="title">Book Title</label>
-                            <input type="text" name="title" id="title">
-                        </div>
-                    </div>
+                <h2>Register</h2>
+                <form class="form-horizontal" action="memberCreated" method="POST">
                     <div class="form-group">
                         <div class="col-xs-3">
                             <label for="fName">First Name</label>
@@ -73,6 +39,18 @@
                         <div class="col-xs-3">
                             <label for="lName">Last Name</label>
                             <input type="text" name="lName" id="lname">
+                        </div>
+                    </div>
+		    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="lName">Email</label>
+                            <input type="text" name="email" id="email">
+                        </div>
+                    </div>
+		    <div class="form-group">
+                        <div class="col-xs-3">
+                            <label for="lName">Password</label>
+                            <input type="text" name="password" id="password">
                         </div>
                     </div>
                     <div class="form-group">

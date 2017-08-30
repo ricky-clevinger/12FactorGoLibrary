@@ -12,6 +12,8 @@ import (
 	"net/http"
 	_ "github.com/go-sql-driver/mysql"
 	"helper"
+	"crypto/sha1"
+    	"encoding/base64"
 )
 
 //Gets the connection string
@@ -51,7 +53,11 @@ func GetMembers() []Member {
 func MemberExist(mail, pass string) []Member {
 	var members []Member
 
-	request, err := http.NewRequest("GET", url + "/login/" + mail + "/" + pass, nil)
+	bv := []byte(pass) 
+	hasher := sha1.New()
+    	hasher.Write(bv)
+
+	request, err := http.NewRequest("GET", url + "/login/" + mail + "/" + base64.URLEncoding.EncodeToString(hasher.Sum(nil)), nil)
 	helper.CheckErr(err)
 
 	client := &http.Client{}

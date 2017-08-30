@@ -13,6 +13,8 @@ import (
 	"net/http"
 	"os"
 	"html"
+	"crypto/sha1"
+        "encoding/base64"
 )
 
 
@@ -43,6 +45,8 @@ func MemberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 
 	memberFName := helper.HTMLClean(r.FormValue("fName"))
 	memberLName := helper.HTMLClean(r.FormValue("lName"))
+	memberEmail := helper.HTMLClean(r.FormValue("email"))
+	memberPass := helper.HTMLClean(r.FormValue("password"))
 
 	//
 	//Move Database functionality to Backing Service
@@ -52,16 +56,20 @@ func MemberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 
 	if len(memberFName) == 0 || len(memberLName) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in add-member.html.")
-		http.Redirect(w, r, "/add-member.html", http.StatusFound)
+		http.Redirect(w, r, "/register.html", http.StatusFound)
 	} else {
 		db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
 		helper.CheckErr(err)
 		defer db.Close()
 
-		stmt, err := db.Prepare("INSERT INTO member (member_fname, member_lname) VALUES (?, ?)")
+		stmt, err := db.Prepare("INSERT INTO member (member_fname, member_lname, Email, Password) VALUES (?, ?, ?, ?)")
 		helper.CheckErr(err)
 
-		stmt.Exec(memberFName, memberLName)
+		bv := []byte(memberPass) 
+		hasher := sha1.New()
+    		hasher.Write(bv)
+
+		stmt.Exec(memberFName, memberLName, memberEmail, base64.URLEncoding.EncodeToString(hasher.Sum(nil)))
 
 		p := LoadPage(members, books)
 		RenderTemplate(w, "memberCreated", p)
