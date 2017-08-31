@@ -104,8 +104,7 @@ func Validate(page http.HandlerFunc, role string) http.HandlerFunc {
 			ctx := context.WithValue(req.Context(), MyKey, *claims)
 			page(res, req.WithContext(ctx))
 		} else {
-			http.NotFound(res, req)
-			return
+			http.Redirect(res, req, "/index.html", 307)
 		}
 	})
 }
@@ -134,8 +133,7 @@ func Validate2(page http.HandlerFunc, role1, role2 string) http.HandlerFunc {
 			ctx := context.WithValue(req.Context(), MyKey, *claims)
 			page(res, req.WithContext(ctx))
 		} else {
-			http.NotFound(res, req)
-			return
+			http.Redirect(res, req, "/index.html", 307)
 		}
 	})
 }
