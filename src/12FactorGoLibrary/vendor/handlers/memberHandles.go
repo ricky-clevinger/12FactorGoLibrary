@@ -40,22 +40,15 @@ func AddMemberHandler(w http.ResponseWriter, r *http.Request) {
 
 //Handles the create member page
 func MemberCreatedHandler(w http.ResponseWriter, r *http.Request) {
-	var members []member.Member
-	var books []book.Book
 
 	memberFName := helper.HTMLClean(r.FormValue("fName"))
 	memberLName := helper.HTMLClean(r.FormValue("lName"))
 	memberEmail := helper.HTMLClean(r.FormValue("email"))
 	memberPass := helper.HTMLClean(r.FormValue("password"))
+	memberPass2 := helper.HTMLClean(r.FormValue("password2"))
 
-	//
-	//Move Database functionality to Backing Service
-	//Maybe a method that takes an undetermined # of inputs and
-	//      returns a false if any are == 0?
-	//
-
-	if len(memberFName) == 0 || len(memberLName) == 0 {
-		os.Stderr.WriteString("Empty fields inputted in add-member.html.")
+	if len(memberFName) == 0 || len(memberLName) == 0 || len(memberEmail) <= 0 || len(memberPass) <= 6 || memberPass != memberPass2{
+		os.Stderr.WriteString("Empty fields inputted in register.html.")
 		http.Redirect(w, r, "/register.html", http.StatusFound)
 	} else {
 		db, err := sql.Open("mysql", os.Getenv("LIBRARY"))
@@ -71,8 +64,7 @@ func MemberCreatedHandler(w http.ResponseWriter, r *http.Request) {
 
 		stmt.Exec(memberFName, memberLName, memberEmail, base64.URLEncoding.EncodeToString(hasher.Sum(nil)))
 
-		p := LoadPage(members, books)
-		RenderTemplate(w, "memberCreated", p)
+		http.Redirect(w, r, "/login.html", 307)
 	}
 }
 
