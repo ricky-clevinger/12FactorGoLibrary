@@ -40,11 +40,8 @@ func BookCreatedHandler(w http.ResponseWriter, r *http.Request) {
 	var books []book.Book
 
 	bookTitle := helper.HTMLClean(r.FormValue("title"))
-	//bookTitle := html.EscapeString(r.FormValue("title"))
 	bookAuthF := helper.HTMLClean(r.FormValue("fName"))
-	//bookAuthF := html.EscapeString(r.FormValue("fName"))
 	bookAuthL := helper.HTMLClean(r.FormValue("lName"))
-	//bookAuthL := html.EscapeString(r.FormValue("lName"))
 
 	if len(bookTitle) == 0 || len(bookAuthF) == 0 || len(bookAuthL) == 0 {
 		os.Stderr.WriteString("Empty fields inputted in add-book.html.")
